@@ -64,6 +64,10 @@ pytest
 
 The unit tests cover the game logic (scoring, lives, fleet movement, cooldowns) without opening a window, and a smoke test runs the whole game headless for a few frames to catch crashes.
 
+### 📚 Design docs
+
+How the game is structured and why, based on Robert Nystrom's *Game Programming Patterns*: see [`docs/`](docs/README.md).
+
 ### 📁 Project layout
 
 | Path | Contents |
@@ -102,25 +106,32 @@ Each phase is one pull request into `master`.
 - [x] Unit tests for game logic (collisions, scoring)
 - [x] Fix the player ship being drawn past the right edge of the screen
 
-### ✨ 4. Gameplay: `feat/gameplay`
-- [ ] Start screen
-- [ ] Game over screen with restart
-- [ ] Waves: a new fleet spawns when the current one is cleared, with increasing difficulty
-- [ ] Obstacles that take several hits
-- [ ] Tests for waves and obstacles
+### 🎨 4. Assets and credits: `chore/assets`
+- [ ] Identify the source, author, and license of every asset
+- [ ] Add Kenney's *Space Shooter Redux* pack (CC0): spritesheet, fonts, sounds, and backgrounds
+- [ ] Load sprites by name from the spritesheet atlas
+- [ ] Replace assets with no identifiable source or a problematic license (e.g. `tv.png`)
+- [ ] `CREDITS.md` with per-asset attribution
+- [x] Design docs for the patterns already in use (`docs/`)
 
-### 📦 5. Executables: `ci/release-builds`
+### ✨ 5. Gameplay: `feat/gameplay`
+- [ ] Scenes for the start screen, gameplay, and game over with restart (*State* pattern)
+- [ ] Waves defined as data, with increasing difficulty and a different enemy look per wave (*Type Object* pattern)
+- [ ] Obstacles that take several hits and shrink as they get damaged
+- [ ] Visual feedback: ship damage sprites and explosions
+- [ ] Tests for scenes, waves, and obstacles
+- [ ] Design docs for the new patterns
+
+### 📦 6. Executables: `ci/release-builds`
 - [ ] PyInstaller builds for Linux (`ubuntu-22.04`) and Windows
 - [ ] Executables uploaded as artifacts on every PR
 - [ ] Automatic GitHub Release when a `v*` tag is pushed
 - [ ] Ship `LICENSE` and `CREDITS.md` inside the packages
 - [ ] Latest release badge
 
-### 📝 6. Documentation: `docs/portfolio`
-- [ ] Identify the source, author, and license of every asset on OpenGameArt
-- [ ] Replace assets with no identifiable source or a problematic license
-- [ ] `CREDITS.md` with per-asset attribution
+### 📝 7. Documentation: `docs/portfolio`
 - [ ] Code license (excluding the assets) and license badge
+- [ ] Architecture section in the README linking the design docs
 - [ ] Gameplay GIF and download link to the latest release
 
 ## 🎨 Credits
