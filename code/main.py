@@ -1,10 +1,14 @@
+import os
 import sys
-import pygame
-from player import Player
-from obstacle import Rock
-from enemy import Ufo, Alien
 from random import choice, randint
+
+import pygame
+
+from enemy import Alien, Ufo
 from laser import Laser
+from obstacle import Rock
+from player import Player
+from resources import asset_path
 
 
 class Game:
@@ -14,7 +18,7 @@ class Game:
 
         # Health and score setup
         self.lives = 3
-        self.live_surface = pygame.image.load('../sprites/hud/playerlifes/blue.png').convert_alpha()
+        self.live_surface = pygame.image.load(asset_path('sprites/hud/playerlifes/blue.png')).convert_alpha()
         self.live_x_start_pos = screen_width - (self.live_surface.get_size()[0] * 2 + 20)
         self.score = 0
         self.font = pygame.font.Font(None, 20)
@@ -36,12 +40,12 @@ class Game:
         self.extra_spawn_time = randint(40, 80)
 
         # Audio
-        self.bg_music = pygame.mixer.Sound('../assets/music/wind.mp3')
+        self.bg_music = pygame.mixer.Sound(asset_path('assets/music/wind.mp3'))
         self.bg_music.set_volume(0.2)
         self.bg_music.play(loops=-1)
-        self.explosion_sfx = pygame.mixer.Sound('../assets/sfx/explosion.wav')
+        self.explosion_sfx = pygame.mixer.Sound(asset_path('assets/sfx/explosion.wav'))
         self.explosion_sfx.set_volume(0.5)
-        self.laser_sfx = pygame.mixer.Sound('../assets/sfx/laser_1.wav')
+        self.laser_sfx = pygame.mixer.Sound(asset_path('assets/sfx/laser_1.wav'))
         self.laser_sfx.set_volume(0.3)
 
     def run(self):
@@ -169,7 +173,7 @@ class Game:
 
 class CRT:
     def __init__(self):
-        self.tv = pygame.image.load('../sprites/tv.png').convert_alpha()
+        self.tv = pygame.image.load(asset_path('sprites/tv.png')).convert_alpha()
         self.tv = pygame.transform.scale(self.tv, (screen_width, screen_height))
 
     def create_crt_lines(self):
@@ -198,7 +202,11 @@ if __name__ == '__main__':
     UFO_LASER = pygame.USEREVENT + 1
     pygame.time.set_timer(UFO_LASER, 800)
 
-    while True:
+    # Lets automated tests run the game for a fixed number of frames
+    max_frames = int(os.environ.get('TLAMINA_MAX_FRAMES', '0'))
+    frame = 0
+
+    while not max_frames or frame < max_frames:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -213,3 +221,6 @@ if __name__ == '__main__':
 
         pygame.display.flip()
         clock.tick(60)
+        frame += 1
+
+    pygame.quit()
