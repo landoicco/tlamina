@@ -1,7 +1,7 @@
 # 🛸 Tlamina
 
 [![CI](https://github.com/landoicco/tlamina/actions/workflows/ci.yml/badge.svg)](https://github.com/landoicco/tlamina/actions/workflows/ci.yml)
-![Python](https://img.shields.io/badge/python-3.10%2B-3776AB?logo=python&logoColor=white)
+![Python](https://img.shields.io/badge/python-3.11%2B-3776AB?logo=python&logoColor=white)
 ![pygame-ce](https://img.shields.io/badge/pygame--ce-2.5%2B-5E9A2B)
 ![Nix flake](https://img.shields.io/badge/nix-flake-5277C3?logo=nixos&logoColor=white)
 ![Platforms](https://img.shields.io/badge/platforms-Linux%20%7C%20Windows-lightgrey)
@@ -31,7 +31,7 @@ A retro space shooter built with [pygame-ce](https://pyga.me/). Dodge enemy fire
 
 ## 🚀 Running from source
 
-Requires Python 3.10 or newer.
+Requires Python 3.11 or newer.
 
 ❄️ With Nix:
 
