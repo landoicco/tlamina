@@ -1,5 +1,6 @@
 # 🛸 Tlamina
 
+[![CI](https://github.com/landoicco/tlamina/actions/workflows/ci.yml/badge.svg)](https://github.com/landoicco/tlamina/actions/workflows/ci.yml)
 ![Python](https://img.shields.io/badge/python-3.10%2B-3776AB?logo=python&logoColor=white)
 ![pygame-ce](https://img.shields.io/badge/pygame--ce-2.5%2B-5E9A2B)
 ![Nix flake](https://img.shields.io/badge/nix-flake-5277C3?logo=nixos&logoColor=white)
@@ -7,6 +8,8 @@
 ![Status](https://img.shields.io/badge/status-work%20in%20progress-orange)
 
 A retro space shooter built with [pygame-ce](https://pyga.me/). Dodge enemy fire, take cover behind the meteors, and shoot down the UFO fleet before it reaches you. 👾
+
+> 🏹 **Tlamina** is a Nahuatl verb meaning *to shoot arrows* ([Gran Diccionario Náhuatl](https://gdn.iib.unam.mx/diccionario/tlamina)). In this game, your ship's lasers are the arrows, aimed at the invaders from above.
 
 > 🚧 Work in progress. See the [roadmap](#-roadmap) for the current status.
 
@@ -34,15 +37,32 @@ Requires Python 3.10 or newer.
 
 ```sh
 nix develop
-cd code && python main.py
+python code/main.py
 ```
 
-🐍 Without Nix:
+⚡ With [uv](https://docs.astral.sh/uv/):
+
+```sh
+uv run python code/main.py
+```
+
+🐍 With pip:
 
 ```sh
 pip install pygame-ce
-cd code && python main.py
+python code/main.py
 ```
+
+## 🧪 Development
+
+Lint and tests run on every push and pull request. To run them locally (inside `nix develop`, or prefixed with `uv run`):
+
+```sh
+ruff check .
+pytest
+```
+
+The smoke test runs the game headless for a few frames to catch crashes.
 
 ## 🗺️ Roadmap
 
@@ -50,10 +70,10 @@ Each phase is one pull request into `master`.
 
 ### 🧰 1. Project setup and CI: `chore/setup-and-ci`
 - [x] Nix flake and `pyproject.toml` with pygame-ce
-- [ ] Resource paths that don't depend on the working directory (PyInstaller-compatible)
-- [ ] GitHub Actions: `ruff` lint, headless smoke test, and `pytest`
-- [ ] README with roadmap
-- [ ] CI status badge
+- [x] Resource paths that don't depend on the working directory (PyInstaller-compatible)
+- [x] GitHub Actions: `ruff` lint, headless smoke test, and `pytest`
+- [x] README with roadmap
+- [x] CI status badge
 
 ### 🐛 2. Bug fixes: `fix/gameplay-bugs`
 - [ ] UFO fleet leaves the screen when an edge column loses UFOs
