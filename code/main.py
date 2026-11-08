@@ -72,12 +72,12 @@ class Game:
             self.obstacles.add(new_obstacle)
 
     def ufo_position_checker(self):
-        all_ufos = self.ufos.sprites()
-        for ufo in all_ufos:
-            if ufo.rect.left <= 0 or ufo.rect.right >= screen_width:
-                # Invert direction of ufo's
-                self.ufo_x_speed *= -1
-                self.ufo_move_down(3)
+        # Reverse once per edge hit, no matter how many ufo's touch it
+        hit_right = any(ufo.rect.right >= screen_width for ufo in self.ufos)
+        hit_left = any(ufo.rect.left <= 0 for ufo in self.ufos)
+        if (hit_right and self.ufo_x_speed > 0) or (hit_left and self.ufo_x_speed < 0):
+            self.ufo_x_speed *= -1
+            self.ufo_move_down(3)
 
     def ufo_move_down(self, distance):
         if self.ufos:
