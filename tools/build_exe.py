@@ -18,7 +18,7 @@ BUILD = ROOT / 'build' / 'pyinstaller'
 DIST = ROOT / 'dist'
 
 # Shipped next to the executable in every package
-PACKAGE_FILES = ['README.md', 'CREDITS.md']
+PACKAGE_FILES = ['README.md', 'CREDITS.md', 'LICENSE', 'THIRD_PARTY_NOTICES.md', 'licenses']
 
 
 def package_name():
