@@ -76,11 +76,11 @@ Each phase is one pull request into `master`.
 - [x] CI status badge
 
 ### 🐛 2. Bug fixes: `fix/gameplay-bugs`
-- [ ] UFO fleet leaves the screen when an edge column loses UFOs
-- [ ] CRT scanlines are redrawn every frame
-- [ ] Images are loaded from disk on every shot
-- [ ] Bonus alien is never removed after leaving the screen
-- [ ] Enemy lasers use an upward-facing sprite
+- [x] UFO fleet leaves the screen when an edge column loses UFOs
+- [x] CRT scanlines are redrawn every frame
+- [x] Images are loaded from disk on every shot
+- [x] Bonus alien is never removed after leaving the screen
+- [x] Enemy lasers use an upward-facing sprite
 
 ### 🏗️ 3. Refactor: `refactor/game-structure`
 - [ ] Remove global variables from `main.py`

@@ -8,7 +8,7 @@ from enemy import Alien, Ufo
 from laser import Laser
 from obstacle import Rock
 from player import Player
-from resources import asset_path
+from resources import load_image, load_sound
 
 
 class Game:
@@ -18,7 +18,7 @@ class Game:
 
         # Health and score setup
         self.lives = 3
-        self.live_surface = pygame.image.load(asset_path('sprites/hud/playerlifes/blue.png')).convert_alpha()
+        self.live_surface = load_image('sprites/hud/playerlifes/blue.png')
         self.live_x_start_pos = screen_width - (self.live_surface.get_size()[0] * 2 + 20)
         self.score = 0
         self.font = pygame.font.Font(None, 20)
@@ -40,13 +40,10 @@ class Game:
         self.extra_spawn_time = randint(40, 80)
 
         # Audio
-        self.bg_music = pygame.mixer.Sound(asset_path('assets/music/wind.mp3'))
-        self.bg_music.set_volume(0.2)
+        self.bg_music = load_sound('assets/music/wind.mp3', 0.2)
         self.bg_music.play(loops=-1)
-        self.explosion_sfx = pygame.mixer.Sound(asset_path('assets/sfx/explosion.wav'))
-        self.explosion_sfx.set_volume(0.5)
-        self.laser_sfx = pygame.mixer.Sound(asset_path('assets/sfx/laser_1.wav'))
-        self.laser_sfx.set_volume(0.3)
+        self.explosion_sfx = load_sound('assets/sfx/explosion.wav', 0.5)
+        self.laser_sfx = load_sound('assets/sfx/laser_1.wav', 0.3)
 
     def run(self):
         self.player.update()
@@ -75,12 +72,12 @@ class Game:
             self.obstacles.add(new_obstacle)
 
     def ufo_position_checker(self):
-        all_ufos = self.ufos.sprites()
-        for ufo in all_ufos:
-            if ufo.rect.left <= 0 or ufo.rect.right >= screen_width:
-                # Invert direction of ufo's
-                self.ufo_x_speed *= -1
-                self.ufo_move_down(3)
+        # Reverse once per edge hit, no matter how many ufo's touch it
+        hit_right = any(ufo.rect.right >= screen_width for ufo in self.ufos)
+        hit_left = any(ufo.rect.left <= 0 for ufo in self.ufos)
+        if (hit_right and self.ufo_x_speed > 0) or (hit_left and self.ufo_x_speed < 0):
+            self.ufo_x_speed *= -1
+            self.ufo_move_down(3)
 
     def ufo_move_down(self, distance):
         if self.ufos:
@@ -173,8 +170,9 @@ class Game:
 
 class CRT:
     def __init__(self):
-        self.tv = pygame.image.load(asset_path('sprites/tv.png')).convert_alpha()
+        self.tv = load_image('sprites/tv.png')
         self.tv = pygame.transform.scale(self.tv, (screen_width, screen_height))
+        self.create_crt_lines()
 
     def create_crt_lines(self):
         line_height = 3
@@ -185,7 +183,6 @@ class CRT:
 
     def draw(self):
         self.tv.set_alpha(randint(80, 90))
-        self.create_crt_lines()
         screen.blit(self.tv, (0, 0))
 
 

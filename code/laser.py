@@ -1,12 +1,15 @@
 import pygame
 
-from resources import asset_path
+from resources import load_image
 
 
 class Laser(pygame.sprite.Sprite):
     def __init__(self, pos, speed, screen_height):
         super().__init__()
-        self.image = pygame.image.load(asset_path('sprites/lasers/laser_blue_up.png')).convert_alpha()
+        self.image = load_image('sprites/lasers/laser_blue_up.png')
+        if speed > 0:
+            # Lasers moving down point down
+            self.image = pygame.transform.flip(self.image, False, True)
         self.rect = self.image.get_rect(center=pos)
         self.speed = speed
         self.height_y_constraint = screen_height
