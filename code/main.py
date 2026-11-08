@@ -190,6 +190,7 @@ if __name__ == '__main__':
     screen_width = 800
     screen_height = 800
     screen = pygame.display.set_mode((screen_width, screen_height))
+    pygame.display.set_caption('Tlamina')
     clock = pygame.time.Clock()
     game = Game()
     crt = CRT()
