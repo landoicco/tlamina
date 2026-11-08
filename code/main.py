@@ -8,7 +8,7 @@ from enemy import Alien, Ufo
 from laser import Laser
 from obstacle import Rock
 from player import Player
-from resources import asset_path
+from resources import load_image, load_sound
 
 
 class Game:
@@ -18,7 +18,7 @@ class Game:
 
         # Health and score setup
         self.lives = 3
-        self.live_surface = pygame.image.load(asset_path('sprites/hud/playerlifes/blue.png')).convert_alpha()
+        self.live_surface = load_image('sprites/hud/playerlifes/blue.png')
         self.live_x_start_pos = screen_width - (self.live_surface.get_size()[0] * 2 + 20)
         self.score = 0
         self.font = pygame.font.Font(None, 20)
@@ -40,13 +40,10 @@ class Game:
         self.extra_spawn_time = randint(40, 80)
 
         # Audio
-        self.bg_music = pygame.mixer.Sound(asset_path('assets/music/wind.mp3'))
-        self.bg_music.set_volume(0.2)
+        self.bg_music = load_sound('assets/music/wind.mp3', 0.2)
         self.bg_music.play(loops=-1)
-        self.explosion_sfx = pygame.mixer.Sound(asset_path('assets/sfx/explosion.wav'))
-        self.explosion_sfx.set_volume(0.5)
-        self.laser_sfx = pygame.mixer.Sound(asset_path('assets/sfx/laser_1.wav'))
-        self.laser_sfx.set_volume(0.3)
+        self.explosion_sfx = load_sound('assets/sfx/explosion.wav', 0.5)
+        self.laser_sfx = load_sound('assets/sfx/laser_1.wav', 0.3)
 
     def run(self):
         self.player.update()
@@ -173,7 +170,7 @@ class Game:
 
 class CRT:
     def __init__(self):
-        self.tv = pygame.image.load(asset_path('sprites/tv.png')).convert_alpha()
+        self.tv = load_image('sprites/tv.png')
         self.tv = pygame.transform.scale(self.tv, (screen_width, screen_height))
 
     def create_crt_lines(self):

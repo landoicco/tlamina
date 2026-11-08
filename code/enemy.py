@@ -1,13 +1,12 @@
 import pygame
 
-from resources import asset_path
+from resources import load_image
 
 
 class Ufo(pygame.sprite.Sprite):
     def __init__(self, color, x, y):
         super().__init__()
-        file_path = asset_path(f'sprites/ufo/{color}.png')
-        self.image = pygame.image.load(file_path).convert_alpha()
+        self.image = load_image(f'sprites/ufo/{color}.png')
         self.rect = self.image.get_rect(topleft=(x, y))
 
         if color == 'red':
@@ -24,7 +23,7 @@ class Ufo(pygame.sprite.Sprite):
 class Alien(pygame.sprite.Sprite):
     def __init__(self, side, screen_width, y_offset):
         super().__init__()
-        self.image = pygame.image.load(asset_path('sprites/alien/black.png')).convert_alpha()
+        self.image = load_image('sprites/alien/black.png')
         if side == 'right':
             x = screen_width + 80
             self.speed = -3
