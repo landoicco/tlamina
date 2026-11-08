@@ -41,6 +41,6 @@ class Player(pygame.sprite.Sprite):
 
     def update(self, dt):
         self.recharge(dt)
-        self.constraint()
         self.get_input(dt)
+        self.constraint()
         self.lasers.update(dt)
