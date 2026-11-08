@@ -1,13 +1,13 @@
 import pygame
 
-from resources import load_image
+from resources import load_sprite
 from settings import SCREEN_HEIGHT
 
 
 class Laser(pygame.sprite.Sprite):
     def __init__(self, pos, speed):
         super().__init__()
-        self.image = load_image('sprites/lasers/laser_blue_up.png')
+        self.image = load_sprite('laserBlue16')
         if speed > 0:
             # Lasers moving down point down
             self.image = pygame.transform.flip(self.image, False, True)

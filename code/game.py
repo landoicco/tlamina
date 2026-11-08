@@ -6,7 +6,7 @@ from enemy import Alien, Ufo
 from laser import Laser
 from obstacle import Rock
 from player import Player
-from resources import load_image, load_sound
+from resources import load_sound, load_sprite
 from settings import (
     ALIEN_FIRST_SPAWN,
     ALIEN_POINTS,
@@ -41,7 +41,7 @@ class Game:
 
         # Health and score setup
         self.lives = PLAYER_LIVES
-        self.live_surface = load_image('sprites/hud/playerlifes/blue.png')
+        self.live_surface = load_sprite('playerLife1_blue')
         self.live_x_start_pos = SCREEN_WIDTH - (self.live_surface.get_size()[0] * 2 + 20)
         self.score = 0
         self.font = pygame.font.Font(None, 20)
