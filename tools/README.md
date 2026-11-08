@@ -8,7 +8,7 @@ Both generated files are committed, so the game never needs the source pack. You
 
 ### Get the source pack
 
-The sprites come from **Space Shooter Redux** by Kenney, released under CC0 (see [`assets/kenney/license.txt`](../assets/kenney/license.txt)):
+The sprites come from **Space Shooter Redux** by Kenney, released under CC0 (see [`assets/kenney/space-shooter-redux/license.txt`](../assets/kenney/space-shooter-redux/license.txt)):
 
 - Original: [kenney.nl/assets/space-shooter-redux](https://kenney.nl/assets/space-shooter-redux)
 - Mirror: [opengameart.org/content/space-shooter-redux](https://opengameart.org/content/space-shooter-redux)

@@ -1,5 +1,5 @@
 {
-  "source": "Space Shooter Redux by Kenney (www.kenney.nl), CC0. See assets/kenney/license.txt",
+  "source": "Space Shooter Redux by Kenney (www.kenney.nl), CC0. See assets/kenney/space-shooter-redux/license.txt",
   "sprites": {
     "playerShip1_blue": [2, 102, 99, 75],
     "playerLife1_blue": [118, 102, 33, 26],

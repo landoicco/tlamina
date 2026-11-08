@@ -84,7 +84,7 @@ def write_index(rects):
     lines = [f'    {json.dumps(name)}: {json.dumps(rect)}' for name, rect in rects.items()]
     ATLAS_INDEX.write_text(
         '{\n'
-        '  "source": "Space Shooter Redux by Kenney (www.kenney.nl), CC0. See assets/kenney/license.txt",\n'
+        '  "source": "Space Shooter Redux by Kenney (www.kenney.nl), CC0. See assets/kenney/space-shooter-redux/license.txt",\n'
         '  "sprites": {\n' + ',\n'.join(lines) + '\n  }\n}\n'
     )
 
