@@ -1,21 +1,21 @@
 import pygame
 
 from laser import Laser
-from resources import load_image, load_sound
+from resources import load_sound, load_sprite
 from settings import PLAYER_LASER_COOLDOWN, PLAYER_LASER_SPEED, PLAYER_SPEED, SCREEN_WIDTH
 
 
 class Player(pygame.sprite.Sprite):
     def __init__(self, pos):
         super().__init__()
-        self.image = load_image('sprites/player_blue.png')
+        self.image = load_sprite('playerShip1_blue')
         self.rect = self.image.get_frect(midbottom=pos)
         self.speed = PLAYER_SPEED
         self.cooldown_left = 0
 
         self.lasers = pygame.sprite.Group()
 
-        self.laser_sfx = load_sound('assets/sfx/laser_1.wav', 0.3)
+        self.laser_sfx = load_sound('assets/kenney/space-shooter-redux/sfx_laser1.ogg', 0.3)
 
     def get_input(self, dt):
         keys = pygame.key.get_pressed()

@@ -1,0 +1,13 @@
+{
+  "source": "Space Shooter Redux by Kenney (www.kenney.nl), CC0. See assets/kenney/space-shooter-redux/license.txt",
+  "sprites": {
+    "playerShip1_blue": [2, 102, 99, 75],
+    "playerLife1_blue": [118, 102, 33, 26],
+    "ufoRed": [217, 2, 91, 91],
+    "ufoGreen": [124, 2, 91, 91],
+    "ufoYellow": [310, 2, 91, 91],
+    "enemyBlack1": [403, 2, 93, 84],
+    "laserBlue16": [103, 102, 13, 54],
+    "meteorBrown_big2": [2, 2, 120, 98]
+  }
+}

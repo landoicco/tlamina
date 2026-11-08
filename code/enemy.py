@@ -1,13 +1,13 @@
 import pygame
 
-from resources import load_image
-from settings import ALIEN_SPEED, ALIEN_Y, SCREEN_WIDTH, UFO_POINTS
+from resources import load_sprite
+from settings import ALIEN_SPEED, ALIEN_Y, SCREEN_WIDTH, UFO_POINTS, UFO_SPRITES
 
 
 class Ufo(pygame.sprite.Sprite):
     def __init__(self, color, x, y):
         super().__init__()
-        self.image = load_image(f'sprites/ufo/{color}.png')
+        self.image = load_sprite(UFO_SPRITES[color])
         self.rect = self.image.get_frect(topleft=(x, y))
         self.value = UFO_POINTS[color]
 
@@ -18,7 +18,7 @@ class Ufo(pygame.sprite.Sprite):
 class Alien(pygame.sprite.Sprite):
     def __init__(self, side):
         super().__init__()
-        self.image = load_image('sprites/alien/black.png')
+        self.image = load_sprite('enemyBlack1')
         if side == 'right':
             x = SCREEN_WIDTH + 80
             self.speed = -ALIEN_SPEED

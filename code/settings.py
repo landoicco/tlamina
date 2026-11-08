@@ -4,6 +4,9 @@ SCREEN_HEIGHT = 800
 FPS = 60
 MAX_DT = 0.05  # s, caps the frame time so a hitch can't make sprites skip through each other
 
+# Size of every sprite relative to its original size in the atlas
+SPRITE_SCALE = 1.0
+
 # Speeds are in pixels per second and times in seconds
 
 # Player
@@ -14,6 +17,7 @@ PLAYER_LASER_COOLDOWN = 0.6
 
 # Ufo fleet
 UFO_ROW_COLORS = ['yellow', 'green', 'red']
+UFO_SPRITES = {'red': 'ufoRed', 'yellow': 'ufoYellow', 'green': 'ufoGreen'}
 UFO_COLS = 5
 UFO_X_DISTANCE = 120
 UFO_Y_DISTANCE = 120
@@ -39,3 +43,5 @@ OBSTACLE_Y = 650
 # CRT effect
 CRT_LINE_HEIGHT = 3
 CRT_ALPHA = (80, 90)
+CRT_VIGNETTE_SIZE = 100  # px from the edge to where the darkening fades out
+CRT_CORNER_RADIUS = 140  # px

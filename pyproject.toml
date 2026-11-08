@@ -2,7 +2,7 @@
 name = "tlamina"
 version = "0.1.0"
 description = "Tlamina: a retro space shooter made with pygame-ce"
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 dependencies = [
     "pygame-ce>=2.5",
 ]

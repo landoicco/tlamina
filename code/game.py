@@ -6,7 +6,7 @@ from enemy import Alien, Ufo
 from laser import Laser
 from obstacle import Rock
 from player import Player
-from resources import load_image, load_sound
+from resources import load_sound, load_sprite
 from settings import (
     ALIEN_FIRST_SPAWN,
     ALIEN_POINTS,
@@ -41,7 +41,7 @@ class Game:
 
         # Health and score setup
         self.lives = PLAYER_LIVES
-        self.live_surface = load_image('sprites/hud/playerlifes/blue.png')
+        self.live_surface = load_sprite('playerLife1_blue')
         self.live_x_start_pos = SCREEN_WIDTH - (self.live_surface.get_size()[0] * 2 + 20)
         self.score = 0
         self.font = pygame.font.Font(None, 20)
@@ -63,10 +63,11 @@ class Game:
         self.extra_spawn_time = uniform(*ALIEN_FIRST_SPAWN)
 
         # Audio
-        self.bg_music = load_sound('assets/music/wind.mp3', 0.2)
+        self.bg_music = load_sound('assets/music/spacecrusher.ogg', 0.2)
         self.bg_music.play(loops=-1)
-        self.explosion_sfx = load_sound('assets/sfx/explosion.wav', 0.5)
-        self.laser_sfx = load_sound('assets/sfx/laser_1.wav', 0.3)
+        self.explosion_sfx = load_sound('assets/kenney/sci-fi-sounds/explosionCrunch_000.ogg', 0.5)
+        self.player_hit_sfx = load_sound('assets/kenney/sci-fi-sounds/explosionCrunch_001.ogg', 0.5)
+        self.laser_sfx = load_sound('assets/kenney/space-shooter-redux/sfx_laser1.ogg', 0.3)
 
     def update(self, dt):
         self.player.update(dt)
@@ -168,6 +169,7 @@ class Game:
             if pygame.sprite.spritecollide(laser, self.player, False):
                 laser.kill()
                 self.lives -= 1
+                self.player_hit_sfx.play()
                 if self.lives <= 0:
                     self.state = GAME_OVER
 

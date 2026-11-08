@@ -1,0 +1,9 @@
+# Sprites packed into assets/atlas.png, by their file name in Kenney's
+# Space Shooter Redux pack (without the .png extension).
+# Add a name here and rerun tools/build_atlas.py to use a new sprite.
+
+[sprites]
+player = ['playerShip1_blue', 'playerLife1_blue']
+enemies = ['ufoRed', 'ufoGreen', 'ufoYellow', 'enemyBlack1']
+lasers = ['laserBlue16']
+obstacles = ['meteorBrown_big2']
