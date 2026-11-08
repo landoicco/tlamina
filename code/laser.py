@@ -11,13 +11,13 @@ class Laser(pygame.sprite.Sprite):
         if speed > 0:
             # Lasers moving down point down
             self.image = pygame.transform.flip(self.image, False, True)
-        self.rect = self.image.get_rect(center=pos)
+        self.rect = self.image.get_frect(center=pos)
         self.speed = speed
 
     def destroy(self):
         if self.rect.y <= -50 or self.rect.y >= SCREEN_HEIGHT - 50:
             self.kill()
 
-    def update(self):
-        self.rect.y += self.speed
+    def update(self, dt):
+        self.rect.y += self.speed * dt
         self.destroy()

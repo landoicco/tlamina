@@ -1,4 +1,4 @@
-from random import choice, randint
+from random import choice, uniform
 
 import pygame
 
@@ -18,6 +18,7 @@ from settings import (
     SCREEN_WIDTH,
     UFO_COLS,
     UFO_DROP,
+    UFO_LASER_INTERVAL,
     UFO_LASER_SPEED,
     UFO_ROW_COLORS,
     UFO_SPEED,
@@ -55,10 +56,11 @@ class Game:
         self.ufos_setup()
         self.ufo_x_speed = UFO_SPEED
         self.ufo_lasers = pygame.sprite.Group()
+        self.ufo_shoot_time = UFO_LASER_INTERVAL
 
         # Extra alien setup
         self.alien = pygame.sprite.GroupSingle()
-        self.extra_spawn_time = randint(*ALIEN_FIRST_SPAWN)
+        self.extra_spawn_time = uniform(*ALIEN_FIRST_SPAWN)
 
         # Audio
         self.bg_music = load_sound('assets/music/wind.mp3', 0.2)
@@ -66,15 +68,16 @@ class Game:
         self.explosion_sfx = load_sound('assets/sfx/explosion.wav', 0.5)
         self.laser_sfx = load_sound('assets/sfx/laser_1.wav', 0.3)
 
-    def update(self):
-        self.player.update()
-        self.extra_alien_timer()
+    def update(self, dt):
+        self.player.update(dt)
+        self.extra_alien_timer(dt)
+        self.ufo_shoot_timer(dt)
         self.collision_checks()
 
-        self.ufos.update(self.ufo_x_speed)
+        self.ufos.update(self.ufo_x_speed, dt)
         self.ufo_position_checker()
-        self.ufo_lasers.update()
-        self.alien.update()
+        self.ufo_lasers.update(dt)
+        self.alien.update(dt)
 
     def draw(self, surface):
         self.player.sprite.lasers.draw(surface)
@@ -93,15 +96,31 @@ class Game:
 
     def ufo_position_checker(self):
         # Reverse once per edge hit, no matter how many ufo's touch it
-        hit_right = any(ufo.rect.right >= SCREEN_WIDTH for ufo in self.ufos)
-        hit_left = any(ufo.rect.left <= 0 for ufo in self.ufos)
-        if (hit_right and self.ufo_x_speed > 0) or (hit_left and self.ufo_x_speed < 0):
-            self.ufo_x_speed *= -1
-            self.ufo_move_down(UFO_DROP)
+        if not self.ufos:
+            return
+        overshoot_right = max(ufo.rect.right for ufo in self.ufos) - SCREEN_WIDTH
+        overshoot_left = -min(ufo.rect.left for ufo in self.ufos)
+        if overshoot_right >= 0 and self.ufo_x_speed > 0:
+            self.ufo_bounce(-2 * overshoot_right)
+        elif overshoot_left >= 0 and self.ufo_x_speed < 0:
+            self.ufo_bounce(2 * overshoot_left)
+
+    def ufo_bounce(self, x_correction):
+        # Reflect the distance travelled past the edge, so bounces don't depend on the frame rate
+        for ufo in self.ufos:
+            ufo.rect.x += x_correction
+        self.ufo_x_speed *= -1
+        self.ufo_move_down(UFO_DROP)
 
     def ufo_move_down(self, distance):
         for ufo in self.ufos:
             ufo.rect.y += distance
+
+    def ufo_shoot_timer(self, dt):
+        self.ufo_shoot_time -= dt
+        if self.ufo_shoot_time <= 0:
+            self.ufo_shoot()
+            self.ufo_shoot_time += UFO_LASER_INTERVAL
 
     def ufo_shoot(self):
         if self.ufos:
@@ -116,11 +135,11 @@ class Game:
                 y = row_index * UFO_Y_DISTANCE + UFO_Y_OFFSET
                 self.ufos.add(Ufo(color, x, y))
 
-    def extra_alien_timer(self):
-        self.extra_spawn_time -= 1
+    def extra_alien_timer(self, dt):
+        self.extra_spawn_time -= dt
         if self.extra_spawn_time <= 0:
             self.alien.add(Alien(choice(['right', 'left'])))
-            self.extra_spawn_time = randint(*ALIEN_SPAWN)
+            self.extra_spawn_time = uniform(*ALIEN_SPAWN)
 
     def collision_checks(self):
         # Player lasers

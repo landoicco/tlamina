@@ -8,11 +8,11 @@ class Ufo(pygame.sprite.Sprite):
     def __init__(self, color, x, y):
         super().__init__()
         self.image = load_image(f'sprites/ufo/{color}.png')
-        self.rect = self.image.get_rect(topleft=(x, y))
+        self.rect = self.image.get_frect(topleft=(x, y))
         self.value = UFO_POINTS[color]
 
-    def update(self, x_speed):
-        self.rect.x += x_speed
+    def update(self, x_speed, dt):
+        self.rect.x += x_speed * dt
 
 
 class Alien(pygame.sprite.Sprite):
@@ -25,12 +25,12 @@ class Alien(pygame.sprite.Sprite):
         else:
             x = -50
             self.speed = ALIEN_SPEED
-        self.rect = self.image.get_rect(topleft=(x, ALIEN_Y))
+        self.rect = self.image.get_frect(topleft=(x, ALIEN_Y))
 
     def destroy(self):
         if (self.speed < 0 and self.rect.right < 0) or (self.speed > 0 and self.rect.left > SCREEN_WIDTH):
             self.kill()
 
-    def update(self):
-        self.rect.x += self.speed
+    def update(self, dt):
+        self.rect.x += self.speed * dt
         self.destroy()

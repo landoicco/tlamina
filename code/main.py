@@ -4,7 +4,7 @@ import pygame
 
 from crt import CRT
 from game import GAME_OVER, Game
-from settings import FPS, SCREEN_HEIGHT, SCREEN_WIDTH, UFO_LASER_INTERVAL
+from settings import FPS, MAX_DT, SCREEN_HEIGHT, SCREEN_WIDTH
 
 
 def main():
@@ -15,23 +15,18 @@ def main():
     game = Game()
     crt = CRT()
 
-    ufo_laser_event = pygame.USEREVENT + 1
-    pygame.time.set_timer(ufo_laser_event, UFO_LASER_INTERVAL)
-
     # Lets automated tests run the game for a fixed number of frames
     max_frames = int(os.environ.get('TLAMINA_MAX_FRAMES', '0'))
     frame = 0
     running = True
+    dt = 0
 
     while running and (not max_frames or frame < max_frames):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
 
-            if event.type == ufo_laser_event:
-                game.ufo_shoot()
-
-        game.update()
+        game.update(dt)
         # No game over screen yet, so losing still closes the game
         if game.state == GAME_OVER:
             running = False
@@ -41,7 +36,7 @@ def main():
         crt.draw(screen)
 
         pygame.display.flip()
-        clock.tick(FPS)
+        dt = min(clock.tick(FPS) / 1000, MAX_DT)
         frame += 1
 
     pygame.quit()
