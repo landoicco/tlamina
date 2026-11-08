@@ -2,18 +2,18 @@ import pygame
 
 from laser import Laser
 from resources import load_image, load_sound
+from settings import PLAYER_LASER_COOLDOWN, PLAYER_LASER_SPEED, PLAYER_SPEED, SCREEN_WIDTH
 
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, pos, constraint, speed):
+    def __init__(self, pos):
         super().__init__()
         self.image = load_image('sprites/player_blue.png')
         self.rect = self.image.get_rect(midbottom=pos)
-        self.speed = speed
-        self.max_x_constraint = constraint
+        self.speed = PLAYER_SPEED
         self.ready = True
         self.laser_time = 0
-        self.laser_cooldown = 600
+        self.laser_cooldown = PLAYER_LASER_COOLDOWN
 
         self.lasers = pygame.sprite.Group()
 
@@ -39,10 +39,10 @@ class Player(pygame.sprite.Sprite):
                 self.ready = True
 
     def shoot_laser(self):
-        self.lasers.add(Laser(self.rect.center, -8, self.rect.bottom))
+        self.lasers.add(Laser(self.rect.center, PLAYER_LASER_SPEED))
 
     def constraint(self):
-        self.rect.right = min(self.rect.right, self.max_x_constraint)
+        self.rect.right = min(self.rect.right, SCREEN_WIDTH)
         self.rect.left = max(self.rect.left, 0)
 
     def update(self):
