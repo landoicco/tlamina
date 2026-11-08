@@ -172,6 +172,7 @@ class CRT:
     def __init__(self):
         self.tv = load_image('sprites/tv.png')
         self.tv = pygame.transform.scale(self.tv, (screen_width, screen_height))
+        self.create_crt_lines()
 
     def create_crt_lines(self):
         line_height = 3
@@ -182,7 +183,6 @@ class CRT:
 
     def draw(self):
         self.tv.set_alpha(randint(80, 90))
-        self.create_crt_lines()
         screen.blit(self.tv, (0, 0))
 
 

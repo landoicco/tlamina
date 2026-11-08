@@ -31,6 +31,12 @@ class Alien(pygame.sprite.Sprite):
             x = -50
             self.speed = 3
         self.rect = self.image.get_rect(topleft=(x, y_offset))
+        self.screen_width = screen_width
+
+    def destroy(self):
+        if (self.speed < 0 and self.rect.right < 0) or (self.speed > 0 and self.rect.left > self.screen_width):
+            self.kill()
 
     def update(self):
         self.rect.x += self.speed
+        self.destroy()
