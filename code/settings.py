@@ -43,3 +43,5 @@ OBSTACLE_Y = 650
 # CRT effect
 CRT_LINE_HEIGHT = 3
 CRT_ALPHA = (80, 90)
+CRT_VIGNETTE_SIZE = 100  # px from the edge to where the darkening fades out
+CRT_CORNER_RADIUS = 140  # px

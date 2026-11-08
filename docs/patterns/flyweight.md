@@ -34,6 +34,6 @@ Sounds are cached by `(path, volume)`, since the volume is stored on the sound o
 
 - ✅ The atlas is read from disk once per run, and each sprite is cut and scaled once.
 - ✅ Changing `SPRITE_SCALE` resizes every sprite without touching the art.
-- ⚠️ **Shared surfaces must not be modified.** Drawing on a cached image would change it for every sprite that uses it. `CRT` only draws its scanlines on a scaled copy.
+- ⚠️ **Shared surfaces must not be modified.** Drawing on a cached image would change it for every sprite that uses it. `CRT` draws its vignette and scanlines on a surface of its own instead.
 - ⚠️ Downward lasers call `pygame.transform.flip()` on each shot, which creates a new 13×54 surface every time. It's cheap, but the flipped image could be cached as well.
 - ❌ The cache never evicts anything. That's fine because the full asset set fits in a few megabytes.
