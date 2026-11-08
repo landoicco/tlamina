@@ -1,223 +1,46 @@
 import os
-import sys
-from random import choice, randint
 
 import pygame
 
-from enemy import Alien, Ufo
-from laser import Laser
-from obstacle import Rock
-from player import Player
-from resources import load_image, load_sound
+from crt import CRT
+from game import GAME_OVER, Game
+from settings import FPS, MAX_DT, SCREEN_HEIGHT, SCREEN_WIDTH
 
 
-class Game:
-    def __init__(self):
-        player_sprite = Player((screen_width / 2, screen_height - 5), screen_width, 5)
-        self.player = pygame.sprite.GroupSingle(player_sprite)
-
-        # Health and score setup
-        self.lives = 3
-        self.live_surface = load_image('sprites/hud/playerlifes/blue.png')
-        self.live_x_start_pos = screen_width - (self.live_surface.get_size()[0] * 2 + 20)
-        self.score = 0
-        self.font = pygame.font.Font(None, 20)
-
-        # Obstacles setup
-        self.obstacles = pygame.sprite.Group()
-        self.obstacle_amount = 4
-        self.obstacle_x_positions = [num * (screen_width / self.obstacle_amount) for num in range(self.obstacle_amount)]
-        self.create_multiple_obstacles(screen_width / 8, 650, *self.obstacle_x_positions)
-
-        # Ufo setup
-        self.ufos = pygame.sprite.Group()
-        self.ufos_setup(3, 5, x_offset=50, y_offset=130)
-        self.ufo_x_speed = 1
-        self.ufo_lasers = pygame.sprite.Group()
-
-        # Extra alien setup
-        self.alien = pygame.sprite.GroupSingle()
-        self.extra_spawn_time = randint(40, 80)
-
-        # Audio
-        self.bg_music = load_sound('assets/music/wind.mp3', 0.2)
-        self.bg_music.play(loops=-1)
-        self.explosion_sfx = load_sound('assets/sfx/explosion.wav', 0.5)
-        self.laser_sfx = load_sound('assets/sfx/laser_1.wav', 0.3)
-
-    def run(self):
-        self.player.update()
-        self.player.sprite.lasers.draw(screen)
-        self.player.draw(screen)
-
-        self.extra_alien_timer()
-        self.collision_checks()
-        self.display_lives()
-        self.display_score()
-
-        self.ufos.update(self.ufo_x_speed)
-        self.ufo_position_checker()
-        self.ufos.draw(screen)
-        self.ufo_lasers.update()
-        self.ufo_lasers.draw(screen)
-
-        self.obstacles.draw(screen)
-        self.alien.draw(screen)
-        self.alien.update()
-
-    def create_multiple_obstacles(self, x_start, y_start, *offset):
-        for offset_x in offset:
-            new_obstacle = Rock((x_start + offset_x,
-                                 y_start))
-            self.obstacles.add(new_obstacle)
-
-    def ufo_position_checker(self):
-        # Reverse once per edge hit, no matter how many ufo's touch it
-        hit_right = any(ufo.rect.right >= screen_width for ufo in self.ufos)
-        hit_left = any(ufo.rect.left <= 0 for ufo in self.ufos)
-        if (hit_right and self.ufo_x_speed > 0) or (hit_left and self.ufo_x_speed < 0):
-            self.ufo_x_speed *= -1
-            self.ufo_move_down(3)
-
-    def ufo_move_down(self, distance):
-        if self.ufos:
-            all_ufos = self.ufos.sprites()
-            for ufo in all_ufos:
-                ufo.rect.y += distance
-
-    def ufo_shoot(self):
-        if self.ufos.sprites():
-            random_ufo = choice(self.ufos.sprites())
-            laser_sprite = Laser(random_ufo.rect.center, 6, screen_height)
-            self.ufo_lasers.add(laser_sprite)
-            self.laser_sfx.play()
-
-    def ufos_setup(self, rows, cols, x_distance=120, y_distance=120, x_offset=120, y_offset=50):
-        for row_index, row in enumerate(range(rows)):
-            for col_index, col in enumerate(range(cols)):
-                x = col_index * x_distance + x_offset
-                y = row_index * y_distance + y_offset
-                if row_index == 0:
-                    ufo_sprite = Ufo('yellow', x, y)
-                elif 1 <= row_index < 2:
-                    ufo_sprite = Ufo('green', x, y)
-                else:
-                    ufo_sprite = Ufo('red', x, y)
-                self.ufos.add(ufo_sprite)
-
-    def extra_alien_timer(self):
-        self.extra_spawn_time -= 1
-        if self.extra_spawn_time <= 0:
-            self.alien.add(Alien(choice(['right', 'left']), screen_width, 15))
-            self.extra_spawn_time = randint(400, 800)
-
-    def collision_checks(self):
-
-        # Player lasers
-        if self.player.sprite.lasers:
-            for laser in self.player.sprite.lasers:
-                # Obstacle collisions
-                if pygame.sprite.spritecollide(laser, self.obstacles, True):
-                    laser.kill()
-
-                # Ufo collisions
-                ufos_hit = pygame.sprite.spritecollide(laser, self.ufos, True)
-                if ufos_hit:
-                    for ufo in ufos_hit:
-                        self.score += ufo.value
-                    self.explosion_sfx.play()
-                    laser.kill()
-
-                # Alien collisions
-                if pygame.sprite.spritecollide(laser, self.alien, True):
-                    self.score += 100
-                    self.explosion_sfx.play()
-                    laser.kill()
-
-        # Ufo lasers
-        if self.ufo_lasers:
-            for laser in self.ufo_lasers:
-                # Player collisions
-                if pygame.sprite.spritecollide(laser, self.player, False):
-                    laser.kill()
-                    self.lives -= 1
-                    if self.lives <= 0:
-                        pygame.quit()
-                        sys.exit()
-
-                # Obstacle collisions
-                if pygame.sprite.spritecollide(laser, self.obstacles, True):
-                    laser.kill()
-
-        # Ufo's
-        if self.ufos:
-            for ufo in self.ufos:
-                pygame.sprite.spritecollide(ufo, self.obstacles, True)
-                if pygame.sprite.spritecollide(ufo, self.player, False):
-                    pygame.quit()
-                    sys.exit()
-
-    def display_lives(self):
-        for live in range(self.lives - 1):
-            x = self.live_x_start_pos + (live * (self.live_surface.get_size()[0] + 5))
-            screen.blit(self.live_surface, (x, 15))
-
-    def display_score(self):
-        score_surface = self.font.render(f'Score: {self.score}', False, 'white')
-        score_rect = score_surface.get_rect(topleft=(5, 5))
-        screen.blit(score_surface, score_rect)
-
-
-class CRT:
-    def __init__(self):
-        self.tv = load_image('sprites/tv.png')
-        self.tv = pygame.transform.scale(self.tv, (screen_width, screen_height))
-        self.create_crt_lines()
-
-    def create_crt_lines(self):
-        line_height = 3
-        line_amount = int(screen_height / line_height)
-        for line in range(line_amount):
-            y_pos = line * line_height
-            pygame.draw.line(self.tv, 'black', (0, y_pos), (screen_width, y_pos), 1)
-
-    def draw(self):
-        self.tv.set_alpha(randint(80, 90))
-        screen.blit(self.tv, (0, 0))
-
-
-if __name__ == '__main__':
+def main():
     pygame.init()
-    screen_width = 800
-    screen_height = 800
-    screen = pygame.display.set_mode((screen_width, screen_height))
+    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     pygame.display.set_caption('Tlamina')
     clock = pygame.time.Clock()
     game = Game()
     crt = CRT()
 
-    UFO_LASER = pygame.USEREVENT + 1
-    pygame.time.set_timer(UFO_LASER, 800)
-
     # Lets automated tests run the game for a fixed number of frames
     max_frames = int(os.environ.get('TLAMINA_MAX_FRAMES', '0'))
     frame = 0
+    running = True
+    dt = 0
 
-    while not max_frames or frame < max_frames:
+    while running and (not max_frames or frame < max_frames):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
+                running = False
 
-            if event.type == UFO_LASER:
-                game.ufo_shoot()
+        game.update(dt)
+        # No game over screen yet, so losing still closes the game
+        if game.state == GAME_OVER:
+            running = False
 
         screen.fill((0, 0, 0))
-        game.run()
-        crt.draw()
+        game.draw(screen)
+        crt.draw(screen)
 
         pygame.display.flip()
-        clock.tick(60)
+        dt = min(clock.tick(FPS) / 1000, MAX_DT)
         frame += 1
 
     pygame.quit()
+
+
+if __name__ == '__main__':
+    main()

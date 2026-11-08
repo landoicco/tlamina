@@ -62,7 +62,19 @@ ruff check .
 pytest
 ```
 
-The smoke test runs the game headless for a few frames to catch crashes.
+The unit tests cover the game logic (scoring, lives, fleet movement, cooldowns) without opening a window, and a smoke test runs the whole game headless for a few frames to catch crashes.
+
+### 📁 Project layout
+
+| Path | Contents |
+|---|---|
+| `code/main.py` | Entry point and game loop |
+| `code/game.py` | Game state, collisions, and fleet logic |
+| `code/settings.py` | Tunable constants: speeds (px/s), timers (s), scores |
+| `code/player.py`, `enemy.py`, `laser.py`, `obstacle.py` | Sprites |
+| `code/crt.py` | CRT screen effect |
+| `code/resources.py` | Asset loading (also works inside PyInstaller builds) |
+| `tests/` | Unit and smoke tests |
 
 ## 🗺️ Roadmap
 
@@ -83,11 +95,12 @@ Each phase is one pull request into `master`.
 - [x] Enemy lasers use an upward-facing sprite
 
 ### 🏗️ 3. Refactor: `refactor/game-structure`
-- [ ] Remove global variables from `main.py`
-- [ ] `settings.py` with constants (speeds, cooldowns, scores)
-- [ ] State machine: menu → playing → game over
-- [ ] Delta-time based movement
-- [ ] Unit tests for game logic (collisions, scoring)
+- [x] Remove global variables from `main.py`
+- [x] `settings.py` with constants (speeds, cooldowns, scores)
+- [x] Game states (playing → game over) instead of exiting the process; screens come in phase 4
+- [x] Delta-time based movement
+- [x] Unit tests for game logic (collisions, scoring)
+- [x] Fix the player ship being drawn past the right edge of the screen
 
 ### ✨ 4. Gameplay: `feat/gameplay`
 - [ ] Start screen
