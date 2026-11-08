@@ -15,7 +15,7 @@ class Player(pygame.sprite.Sprite):
 
         self.lasers = pygame.sprite.Group()
 
-        self.laser_sfx = load_sound('assets/sfx/laser_1.wav', 0.3)
+        self.laser_sfx = load_sound('assets/kenney/space-shooter-redux/sfx_laser1.ogg', 0.3)
 
     def get_input(self, dt):
         keys = pygame.key.get_pressed()

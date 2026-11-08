@@ -63,10 +63,11 @@ class Game:
         self.extra_spawn_time = uniform(*ALIEN_FIRST_SPAWN)
 
         # Audio
-        self.bg_music = load_sound('assets/music/wind.mp3', 0.2)
+        self.bg_music = load_sound('assets/music/spacecrusher.ogg', 0.2)
         self.bg_music.play(loops=-1)
-        self.explosion_sfx = load_sound('assets/sfx/explosion.wav', 0.5)
-        self.laser_sfx = load_sound('assets/sfx/laser_1.wav', 0.3)
+        self.explosion_sfx = load_sound('assets/kenney/sci-fi-sounds/explosionCrunch_000.ogg', 0.5)
+        self.player_hit_sfx = load_sound('assets/kenney/sci-fi-sounds/explosionCrunch_001.ogg', 0.5)
+        self.laser_sfx = load_sound('assets/kenney/space-shooter-redux/sfx_laser1.ogg', 0.3)
 
     def update(self, dt):
         self.player.update(dt)
@@ -168,6 +169,7 @@ class Game:
             if pygame.sprite.spritecollide(laser, self.player, False):
                 laser.kill()
                 self.lives -= 1
+                self.player_hit_sfx.play()
                 if self.lives <= 0:
                     self.state = GAME_OVER
 
