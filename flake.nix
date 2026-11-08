@@ -12,7 +12,8 @@
       devShells = forAllSystems (pkgs: {
         default = pkgs.mkShell {
           packages = [
-            (pkgs.python3.withPackages (ps: [ ps.pygame-ce ]))
+            (pkgs.python3.withPackages (ps: [ ps.pygame-ce ps.pytest ]))
+            pkgs.ruff
             pkgs.gh
           ];
         };
