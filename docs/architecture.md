@@ -8,7 +8,7 @@
 | `game.py` | Owns the game state: sprite groups, score, lives, timers, collisions, and fleet movement |
 | `player.py`, `enemy.py`, `laser.py`, `obstacle.py` | Sprites. Each one moves itself in `update(dt)` ([Update Method](patterns/update-method.md)) |
 | `crt.py` | Post-processing overlay drawn on top of each frame |
-| `resources.py` | Resolves asset paths and caches loaded images and sounds ([Flyweight](patterns/flyweight.md)) |
+| `resources.py` | Resolves asset paths, cuts sprites out of the atlas by name, and caches images and sounds ([Flyweight](patterns/flyweight.md)) |
 | `settings.py` | Gameplay tuning values. Speeds are in pixels per second and times in seconds |
 
 Dependencies point one way: `main` → `game` → sprites → `resources` / `settings`. Sprites never import `game`, so each one can be created and tested on its own.
