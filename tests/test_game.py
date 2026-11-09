@@ -8,6 +8,8 @@ from tlamina.resources import load_sprite
 from tlamina.settings import (
     ARMORED_FROM_WAVE,
     ARROW_CHARGE_TIME,
+    COMBO_MAX,
+    COMBO_STEP,
     ENEMY_COLS,
     ENEMY_DROP,
     ENEMY_FLASH_TIME,
@@ -429,3 +431,98 @@ def test_the_hit_flash_wears_off(game):
     enemy.update(0, ENEMY_FLASH_TIME + 0.01)
 
     assert enemy.image is enemy.normal_image
+
+
+# Combo
+
+
+def hit_enemies(game, count):
+    for _ in range(count):
+        enemy = game.enemies.sprites()[0]
+        enemy.health = 1
+        player_laser_at(game, enemy.rect.center)
+        game.collision_checks()
+
+
+def test_the_multiplier_rises_every_few_hits_up_to_a_cap(game):
+    assert game.multiplier == 1
+
+    hit_enemies(game, COMBO_STEP - 1)
+    assert game.multiplier == 1
+
+    hit_enemies(game, 1)
+    assert game.multiplier == 2
+
+    game.combo_hits = COMBO_STEP * COMBO_MAX * 3
+    assert game.multiplier == COMBO_MAX
+
+
+def test_points_are_multiplied(game):
+    game.combo_hits = COMBO_STEP * 2  # x3, and the next hit keeps it there
+    enemy = game.enemies.sprites()[0]
+
+    hit_enemies(game, 1)
+
+    assert game.score == enemy.value * 3
+
+
+def test_a_shot_that_escapes_without_hitting_resets_the_combo(game):
+    game.combo_hits = COMBO_STEP
+    player_laser_at(game, (SCREEN_WIDTH / 2, 0))
+
+    game.update(1 / 10)
+
+    assert game.combo_hits == 0
+
+
+def test_a_shot_stopped_by_a_meteor_is_not_a_miss(game):
+    game.combo_hits = COMBO_STEP
+    rock = game.obstacles.sprites()[0]
+    player_laser_at(game, rock.rect.center)
+
+    game.update(1 / 60)
+
+    assert game.combo_hits == COMBO_STEP
+
+
+def test_an_arrow_that_hits_nothing_is_a_miss(game):
+    game.combo_hits = COMBO_STEP
+    game.player.sprite.lasers.add(Arrow((SCREEN_WIDTH / 2, 0)))
+
+    game.update(1 / 10)
+
+    assert game.combo_hits == 0
+
+
+def test_an_arrow_that_hit_something_is_not_a_miss_when_it_leaves(game):
+    enemy = game.enemies.sprites()[0]
+    arrow = arrow_at(game, enemy.rect.center)
+    game.collision_checks()
+    hits = game.combo_hits
+
+    arrow.rect.bottom = 1
+    game.update(1 / 10)
+
+    assert not arrow.alive()
+    assert game.combo_hits >= hits
+
+
+def test_each_enemy_the_arrow_pierces_counts_as_a_hit(game):
+    column_x = game.enemies.sprites()[0].rect.centerx
+    column = [enemy for enemy in game.enemies if enemy.rect.centerx == column_x]
+    arrow = arrow_at(game, (column_x, 0))
+    for enemy in column:
+        arrow.rect.center = enemy.rect.center
+        game.collision_checks()
+
+    assert game.combo_hits == len(column)
+
+
+def test_getting_hit_resets_the_combo(game):
+    game.combo_hits = COMBO_STEP * 2
+    enemy_laser_at(game, game.player.sprite.rect.center)
+
+    game.collision_checks()
+
+    assert game.combo_hits == 0
+    assert game.multiplier == 1

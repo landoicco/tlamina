@@ -9,6 +9,9 @@ from tlamina.entities.player import Player
 from tlamina.resources import load_sound, load_sprite
 from tlamina.settings import (
     ARMORED_FROM_WAVE,
+    COMBO_COLOR,
+    COMBO_MAX,
+    COMBO_STEP,
     ENEMY_COLS,
     ENEMY_DROP,
     ENEMY_LASER_INTERVAL,
@@ -55,6 +58,7 @@ class Game:
         self.lives = PLAYER_LIVES
         self.life_icon = load_sprite('playerLife1_blue')
         self.score = 0
+        self.combo_hits = 0
 
         # Obstacles setup
         self.obstacles = pygame.sprite.Group()
@@ -79,9 +83,12 @@ class Game:
         self.explosion_sfx = load_sound('assets/kenney/sci-fi-sounds/explosionCrunch_000.ogg', 0.5)
         self.player_hit_sfx = load_sound('assets/kenney/sci-fi-sounds/explosionCrunch_001.ogg', 0.5)
         self.laser_sfx = load_sound('assets/kenney/space-shooter-redux/sfx_laser1.ogg', 0.3)
+        self.combo_sfx = load_sound('assets/kenney/space-shooter-redux/sfx_twoTone.ogg', 0.4)
 
     def update(self, dt):
+        lasers_before = set(self.player.sprite.lasers)
         self.player.update(dt)
+        self.check_misses(lasers_before - set(self.player.sprite.lasers))
         self.ufo_timer(dt)
         self.enemy_shoot_timer(dt)
         self.collision_checks()
@@ -188,11 +195,15 @@ class Game:
             # Enemy collisions; armored enemies survive a normal laser, and the arrow flies on
             enemies_hit = pygame.sprite.spritecollide(laser, self.enemies, False)
             if enemies_hit:
+                laser.hit_something = True
+                for _ in enemies_hit:
+                    self.register_hit()
                 destroyed = [enemy for enemy in enemies_hit if enemy.hit(laser.damage)]
                 for enemy in destroyed:
-                    self.score += enemy.value
+                    points = enemy.value * self.multiplier
+                    self.score += points
                     self.effects.explosion(enemy.rect.center, EXPLOSION_COLORS[enemy.color])
-                    self.effects.floating_text(enemy.rect.center, f'+{enemy.value}')
+                    self.effects.floating_text(enemy.rect.center, f'+{points}')
                 if destroyed:
                     self.explosion_sfx.play()
                 else:
@@ -202,9 +213,12 @@ class Game:
 
             # Ufo collisions
             for ufo in pygame.sprite.spritecollide(laser, self.ufo, True):
-                self.score += UFO_POINTS
+                laser.hit_something = True
+                self.register_hit()
+                points = UFO_POINTS * self.multiplier
+                self.score += points
                 self.effects.explosion(ufo.rect.center, EXPLOSION_COLORS['ufo'], 2 * EXPLOSION_PARTICLES)
-                self.effects.floating_text(ufo.rect.center, f'+{UFO_POINTS}', EXPLOSION_COLORS['ufo'])
+                self.effects.floating_text(ufo.rect.center, f'+{points}', EXPLOSION_COLORS['ufo'])
                 self.explosion_sfx.play()
                 if not laser.pierce:
                     laser.kill()
@@ -232,6 +246,7 @@ class Game:
     def hit_player(self):
         player = self.player.sprite
         self.lives -= 1
+        self.combo_hits = 0
         self.player_hit_sfx.play()
         self.effects.shake()
         if self.lives <= 0:
@@ -245,8 +260,26 @@ class Game:
         for rock in rocks:
             self.effects.explosion(rock.rect.center, EXPLOSION_COLORS[rock.material], EXPLOSION_PARTICLES // 2)
 
+    @property
+    def multiplier(self):
+        return min(1 + self.combo_hits // COMBO_STEP, COMBO_MAX)
+
+    def register_hit(self):
+        before = self.multiplier
+        self.combo_hits += 1
+        if self.multiplier > before:
+            self.combo_sfx.play()
+            player = self.player.sprite
+            self.effects.floating_text((player.rect.centerx, player.rect.top - 20), f'×{self.multiplier}', COMBO_COLOR)
+
+    def check_misses(self, gone_lasers):
+        if any(laser.escaped and not laser.hit_something for laser in gone_lasers):
+            self.combo_hits = 0
+
     def draw_hud(self, surface):
-        draw_text(surface, f'Score {self.score}', HUD_FONT_SIZE, topleft=(HUD_MARGIN, HUD_MARGIN))
+        score_rect = draw_text(surface, f'Score {self.score}', HUD_FONT_SIZE, topleft=(HUD_MARGIN, HUD_MARGIN))
+        if self.multiplier > 1:
+            draw_text(surface, f'×{self.multiplier}', HUD_FONT_SIZE, COMBO_COLOR, topleft=(score_rect.right + 10, HUD_MARGIN))
         draw_text(surface, f'Wave {self.wave}', HUD_FONT_SIZE, 'gray70', midtop=(SCREEN_WIDTH / 2, HUD_MARGIN))
         # One icon per life left, right-aligned
         icon_width = self.life_icon.get_width() + 6

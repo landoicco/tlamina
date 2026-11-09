@@ -46,6 +46,11 @@ WAVE_FIRE_RATE_UP = 1.08  # fleet shots per second multiplier per wave
 ARMORED_FROM_WAVE = 3  # from this wave on, the back row takes two hits
 WAVE_BANNER_TIME = 1.5
 
+# Combo
+COMBO_STEP = 5  # hits in a row to raise the multiplier by one
+COMBO_MAX = 4
+COMBO_COLOR = 'gold'
+
 # Bonus ufo
 UFO_SPRITES = ['ufoRed', 'ufoGreen', 'ufoYellow', 'ufoBlue']
 UFO_SPEED = 180

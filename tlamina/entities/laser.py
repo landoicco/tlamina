@@ -16,9 +16,13 @@ class Laser(pygame.sprite.Sprite):
             self.image = pygame.transform.flip(self.image, False, True)
         self.rect = self.image.get_frect(center=pos)
         self.speed = speed
+        # For the combo: a player shot that escapes without hitting anything is a miss
+        self.hit_something = False
+        self.escaped = False
 
     def destroy(self):
         if self.rect.bottom < 0 or self.rect.top > SCREEN_HEIGHT:
+            self.escaped = True
             self.kill()
 
     def update(self, dt):
