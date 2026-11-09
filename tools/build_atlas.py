@@ -82,9 +82,10 @@ def build(pack):
 def write_index(rects):
     # One sprite per line keeps the file readable and its diffs small
     lines = [f'    {json.dumps(name)}: {json.dumps(rect)}' for name, rect in rects.items()]
+    source = 'Space Shooter Redux by Kenney (www.kenney.nl), CC0. See assets/kenney/space-shooter-redux/license.txt'
     ATLAS_INDEX.write_text(
         '{\n'
-        '  "source": "Space Shooter Redux by Kenney (www.kenney.nl), CC0. See assets/kenney/space-shooter-redux/license.txt",\n'
+        f'  "source": "{source}",\n'
         '  "sprites": {\n' + ',\n'.join(lines) + '\n  }\n}\n'
     )
 

@@ -11,7 +11,7 @@ def test_stars_drift_down():
     background.update(0.1)
 
     # A star near the bottom may have wrapped to the top, so compare the ones that didn't
-    moved = [after - y for y, (_, after, _) in zip(before, background.stars) if after > y]
+    moved = [after - y for y, (_, after, _) in zip(before, background.stars, strict=True) if after > y]
     assert len(moved) >= STAR_AMOUNT * 0.8
     assert all(STAR_SPEED[0] * 0.1 <= distance <= STAR_SPEED[1] * 0.1 + 1e-9 for distance in moved)
 

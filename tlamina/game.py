@@ -288,8 +288,7 @@ class Game:
     def pick_up(self, kind):
         self.player.sprite.apply_powerup(kind)
         (self.shield_up_sfx if kind == 'shield' else self.powerup_sfx).play()
-        player = self.player.sprite
-        self.effects.floating_text((player.rect.centerx, player.rect.top - 20), POWERUP_NAMES[kind], POWERUP_COLORS[kind])
+        self.effects.floating_text(self.above_player(), POWERUP_NAMES[kind], POWERUP_COLORS[kind])
 
     def break_rocks(self, rocks):
         for rock in rocks:
@@ -304,8 +303,12 @@ class Game:
         self.combo_hits += 1
         if self.multiplier > before:
             self.combo_sfx.play()
-            player = self.player.sprite
-            self.effects.floating_text((player.rect.centerx, player.rect.top - 20), f'×{self.multiplier}', COMBO_COLOR)
+            self.effects.floating_text(self.above_player(), f'×{self.multiplier}', COMBO_COLOR)
+
+    def above_player(self):
+        """Where messages about the player, like a power-up's name, float up from."""
+        player = self.player.sprite
+        return (player.rect.centerx, player.rect.top - 20)
 
     def check_misses(self, gone_lasers):
         if any(laser.shot.missed for laser in gone_lasers):
@@ -314,12 +317,14 @@ class Game:
     def draw_hud(self, surface):
         score_rect = draw_text(surface, f'Score {self.score}', HUD_FONT_SIZE, topleft=(HUD_MARGIN, HUD_MARGIN))
         if self.multiplier > 1:
-            draw_text(surface, f'×{self.multiplier}', HUD_FONT_SIZE, COMBO_COLOR, topleft=(score_rect.right + 10, HUD_MARGIN))
+            combo_pos = (score_rect.right + 10, HUD_MARGIN)
+            draw_text(surface, f'×{self.multiplier}', HUD_FONT_SIZE, COMBO_COLOR, topleft=combo_pos)
         draw_text(surface, f'Wave {self.wave}', HUD_FONT_SIZE, 'gray70', midtop=(SCREEN_WIDTH / 2, HUD_MARGIN))
         # One icon per life left, right-aligned
         icon_width = self.life_icon.get_width() + 6
         for life in range(self.lives):
-            surface.blit(self.life_icon, self.life_icon.get_rect(topright=(SCREEN_WIDTH - HUD_MARGIN - life * icon_width, HUD_MARGIN)))
+            right = SCREEN_WIDTH - HUD_MARGIN - life * icon_width
+            surface.blit(self.life_icon, self.life_icon.get_rect(topright=(right, HUD_MARGIN)))
         self.draw_powerup_timers(surface, score_rect.bottom + 10)
 
     def draw_powerup_timers(self, surface, top):

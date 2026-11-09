@@ -1,4 +1,5 @@
 import webbrowser
+from contextlib import suppress
 
 import pygame
 
@@ -26,10 +27,8 @@ def blink_on(time):
 
 def set_cursor(cursor):
     # Cosmetic only: some video drivers (like the headless one in tests) have no system cursors
-    try:
+    with suppress(pygame.error):
         pygame.mouse.set_cursor(cursor)
-    except pygame.error:
-        pass
 
 
 def dim(surface):
@@ -90,7 +89,8 @@ class SplashScene(Scene):
         draw_text(surface, 'by Lando Icaza', 14, 'gray70', center=(CENTER_X, 690))
         if self.link_hovered:
             draw_text(surface, PORTFOLIO_TEXT, PORTFOLIO_SIZE, center=self.link_rect.center)
-            pygame.draw.line(surface, 'white', self.link_rect.move(0, 2).bottomleft, self.link_rect.move(0, 2).bottomright)
+            underline = self.link_rect.move(0, 2)
+            pygame.draw.line(surface, 'white', underline.bottomleft, underline.bottomright)
         else:
             draw_text(surface, PORTFOLIO_TEXT, PORTFOLIO_SIZE, 'gray70', center=self.link_rect.center)
 

@@ -22,6 +22,19 @@ package = false
 [tool.ruff]
 line-length = 120
 
+[tool.ruff.lint]
+select = [
+    "E", "W",  # pycodestyle
+    "F",       # pyflakes
+    "I",       # import order
+    "B",       # bugbear: likely bugs
+    "UP",      # pyupgrade: modern syntax for the supported Python versions
+    "SIM",     # simplifications
+    "RUF",     # ruff's own rules
+]
+# The HUD shows the combo as "×2" on purpose: the font's "x" looks like an "H"
+allowed-confusables = ["×"]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 # Makes the tlamina package importable from the tests without installing it

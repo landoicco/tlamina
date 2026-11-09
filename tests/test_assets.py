@@ -67,7 +67,7 @@ def test_every_random_sprite_choice_is_in_the_atlas(sprites):
 
 
 def test_missing_sprite_names_the_fix():
-    with pytest.raises(KeyError, match='tools/atlas.toml'):
+    with pytest.raises(KeyError, match=r'tools/atlas\.toml'):
         resources.load_sprite('notASprite')
 
 

@@ -21,7 +21,9 @@ class Background:
         self.image.blit(shade, (0, 0))
 
         # Each star is [x, y, speed]; faster stars look closer, so they are brighter
-        self.stars = [[uniform(0, SCREEN_WIDTH), uniform(0, SCREEN_HEIGHT), uniform(*STAR_SPEED)] for _ in range(STAR_AMOUNT)]
+        self.stars = [
+            [uniform(0, SCREEN_WIDTH), uniform(0, SCREEN_HEIGHT), uniform(*STAR_SPEED)] for _ in range(STAR_AMOUNT)
+        ]
 
     def update(self, dt):
         for star in self.stars:
