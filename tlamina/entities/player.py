@@ -1,0 +1,150 @@
+from math import sin
+
+import pygame
+
+from tlamina.entities.laser import Arrow, Laser, Shot
+from tlamina.resources import load_sound, load_sprite
+from tlamina.settings import (
+    ARROW_CHARGE_TIME,
+    CHARGE_GLOW_COLOR,
+    ENGINE_FLAME_FRAME_TIME,
+    ENGINE_FLAME_FRAMES,
+    PLAYER_BLINK_RATE,
+    PLAYER_INVULNERABLE_TIME,
+    PLAYER_LASER_COOLDOWN,
+    PLAYER_LASER_SPEED,
+    PLAYER_SPEED,
+    POWERUP_TIME,
+    POWERUP_WARNING_TIME,
+    RAPID_FIRE_COOLDOWN,
+    SCREEN_WIDTH,
+    VOLLEY_ANGLE,
+)
+
+
+class Player(pygame.sprite.Sprite):
+    def __init__(self, pos):
+        super().__init__()
+        self.ship_image = load_sprite('playerShip1_blue')
+        self.image = self.ship_image
+        self.rect = self.image.get_frect(midbottom=pos)
+        self.invulnerable_left = 0
+        self.powerups = {}  # kind -> seconds left
+        self.shield_image = load_sprite('shield1')
+        self.speed = PLAYER_SPEED
+        self.cooldown_left = 0
+        self.space_held = False
+        self.charge_time = 0
+        self.flame_frames = [load_sprite(name) for name in ENGINE_FLAME_FRAMES]
+        self.flame_time = 0
+
+        self.lasers = pygame.sprite.Group()
+
+        self.laser_sfx = load_sound('assets/kenney/space-shooter-redux/sfx_laser1.ogg', 0.3)
+        self.arrow_sfx = load_sound('assets/kenney/space-shooter-redux/sfx_laser2.ogg', 0.5)
+
+    def get_input(self, dt):
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_RIGHT]:
+            self.rect.x += self.speed * dt
+        elif keys[pygame.K_LEFT]:
+            self.rect.x -= self.speed * dt
+
+        # Each press fires one laser; holding Space charges the arrow, fired on release
+        space = keys[pygame.K_SPACE]
+        if space and not self.space_held:
+            self.shoot_laser()
+            self.charge_time = 0
+        elif space:
+            self.charge_time += dt
+        elif self.space_held:
+            if self.charge_time >= ARROW_CHARGE_TIME:
+                self.shoot_arrow()
+            self.charge_time = 0
+        self.space_held = space
+
+    def recharge(self, dt):
+        self.cooldown_left = max(self.cooldown_left - dt, 0)
+
+    def shoot_laser(self):
+        if self.cooldown_left > 0:
+            return
+        angles = (-VOLLEY_ANGLE, 0, VOLLEY_ANGLE) if self.has('volley') else (0,)
+        shot = Shot(len(angles))
+        self.lasers.add(Laser(self.rect.center, PLAYER_LASER_SPEED, angle=angle, shot=shot) for angle in angles)
+        self.cooldown_left = RAPID_FIRE_COOLDOWN if self.has('rapid_fire') else PLAYER_LASER_COOLDOWN
+        self.laser_sfx.play()
+
+    def has(self, powerup):
+        return self.powerups.get(powerup, 0) > 0
+
+    def apply_powerup(self, kind):
+        # Catching one that's already active restarts its timer
+        self.powerups[kind] = POWERUP_TIME
+
+    def break_shield(self):
+        self.powerups.pop('shield', None)
+
+    def shoot_arrow(self):
+        self.lasers.add(Arrow(self.rect.midtop))
+        self.arrow_sfx.play()
+
+    @property
+    def charge(self):
+        """How charged the arrow is, from 0 to 1."""
+        return min(self.charge_time / ARROW_CHARGE_TIME, 1) if self.space_held else 0
+
+    def constraint(self):
+        self.rect.right = min(self.rect.right, SCREEN_WIDTH)
+        self.rect.left = max(self.rect.left, 0)
+
+    @property
+    def invulnerable(self):
+        return self.invulnerable_left > 0
+
+    @property
+    def visible(self):
+        # Blinks while invulnerable
+        return not self.invulnerable or int(self.invulnerable_left * PLAYER_BLINK_RATE) % 2 == 0
+
+    def take_hit(self, hits_taken):
+        """Become briefly invulnerable and show cracks for the total number of hits taken."""
+        self.invulnerable_left = PLAYER_INVULNERABLE_TIME
+        cracks = load_sprite(f'playerShip1_damage{min(hits_taken, 3)}')
+        # A copy, because the ship sprite is cached and shared
+        self.image = self.ship_image.copy()
+        self.image.blit(cracks, cracks.get_rect(center=self.image.get_rect().center))
+
+    def draw_shield(self, surface):
+        time_left = self.powerups.get('shield', 0)
+        # Blinks when about to run out
+        if time_left > POWERUP_WARNING_TIME or (time_left > 0 and int(time_left * 6) % 2 == 0):
+            surface.blit(self.shield_image, self.shield_image.get_rect(center=self.rect.center))
+
+    def draw_engine_flame(self, surface):
+        frame = self.flame_frames[int(self.flame_time / ENGINE_FLAME_FRAME_TIME) % len(self.flame_frames)]
+        # Tucked a few pixels under the hull, so it looks attached to the engine
+        surface.blit(frame, frame.get_rect(midtop=(self.rect.centerx, self.rect.bottom - 4)))
+
+    def draw_charge_glow(self, surface):
+        if self.charge < 0.15:
+            return
+        if self.charge < 1:
+            radius, alpha = 3 + 7 * self.charge, 90 + 100 * self.charge
+        else:
+            # Fully charged: pulse, so it's clear the arrow is ready
+            radius, alpha = 11 + 2 * sin(self.charge_time * 20), 230
+        glow = pygame.Surface((2 * radius + 2, 2 * radius + 2), pygame.SRCALPHA)
+        center = glow.get_rect().center
+        pygame.draw.circle(glow, (*CHARGE_GLOW_COLOR, round(alpha)), center, radius)
+        pygame.draw.circle(glow, (255, 255, 255, round(alpha)), center, radius / 2)
+        surface.blit(glow, glow.get_rect(center=self.rect.midtop))
+
+    def update(self, dt):
+        self.flame_time += dt
+        self.invulnerable_left = max(self.invulnerable_left - dt, 0)
+        self.powerups = {kind: left - dt for kind, left in self.powerups.items() if left - dt > 0}
+        self.recharge(dt)
+        self.get_input(dt)
+        self.constraint()
+        self.lasers.update(dt)

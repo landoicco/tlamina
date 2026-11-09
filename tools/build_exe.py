@@ -27,13 +27,15 @@ def package_name():
 
 def build_executable():
     PyInstaller.__main__.run([
-        str(ROOT / 'code' / 'main.py'),
+        str(ROOT / 'tlamina' / '__main__.py'),
         '--name', 'Tlamina',
         '--onefile',
         # No console window on Windows
         '--windowed',
-        # The game's modules live in code/, next to main.py
-        '--paths', str(ROOT / 'code'),
+        # The file's icon in Windows Explorer and the taskbar; Linux executables don't have one
+        '--icon', str(ROOT / 'assets' / 'icon.ico'),
+        # __main__.py imports the rest of the tlamina package, found from the repo root
+        '--paths', str(ROOT),
         # Bundled under sys._MEIPASS/assets, where resources.py looks for them
         '--add-data', f'{ROOT / "assets"}{os.pathsep}assets',
         '--distpath', str(BUILD / 'dist'),

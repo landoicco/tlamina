@@ -12,11 +12,21 @@ All sprites are packed into [`assets/atlas.png`](assets/atlas.png) by [`tools/bu
 
 The sprites in use are listed by their original names in [`tools/atlas.toml`](tools/atlas.toml).
 
+The background tile, `assets/kenney/space-shooter-redux/darkPurple.png`, comes unmodified from the same pack's `Backgrounds/` folder.
+
+The game icon, `assets/icon.ico`, is the pack's `playerShip1_blue` centered on a transparent square and resized to 16, 32, 48, and 256 px. The window uses the same image, built from the atlas at startup.
+
 ## 🔊 Sound effects
 
 | File | Used for | Pack | Author | License | Source |
 |---|---|---|---|---|---|
 | `assets/kenney/space-shooter-redux/sfx_laser1.ogg` | Lasers | Space Shooter Redux | [Kenney](https://www.kenney.nl) | CC0 ([license](assets/kenney/space-shooter-redux/license.txt)) | [OpenGameArt](https://opengameart.org/content/space-shooter-redux) |
+| `assets/kenney/space-shooter-redux/sfx_laser2.ogg` | Charged arrow | Space Shooter Redux | [Kenney](https://www.kenney.nl) | CC0 ([license](assets/kenney/space-shooter-redux/license.txt)) | [OpenGameArt](https://opengameart.org/content/space-shooter-redux) |
+| `assets/kenney/space-shooter-redux/sfx_twoTone.ogg` | Combo multiplier going up | Space Shooter Redux | [Kenney](https://www.kenney.nl) | CC0 ([license](assets/kenney/space-shooter-redux/license.txt)) | [OpenGameArt](https://opengameart.org/content/space-shooter-redux) |
+| `assets/kenney/space-shooter-redux/sfx_zap.ogg` | Picking up a power-up | Space Shooter Redux | [Kenney](https://www.kenney.nl) | CC0 ([license](assets/kenney/space-shooter-redux/license.txt)) | [OpenGameArt](https://opengameart.org/content/space-shooter-redux) |
+| `assets/kenney/space-shooter-redux/sfx_shieldUp.ogg` | Picking up the shield | Space Shooter Redux | [Kenney](https://www.kenney.nl) | CC0 ([license](assets/kenney/space-shooter-redux/license.txt)) | [OpenGameArt](https://opengameart.org/content/space-shooter-redux) |
+| `assets/kenney/space-shooter-redux/sfx_shieldDown.ogg` | The shield breaking | Space Shooter Redux | [Kenney](https://www.kenney.nl) | CC0 ([license](assets/kenney/space-shooter-redux/license.txt)) | [OpenGameArt](https://opengameart.org/content/space-shooter-redux) |
+| `assets/kenney/space-shooter-redux/sfx_lose.ogg` | Game over | Space Shooter Redux | [Kenney](https://www.kenney.nl) | CC0 ([license](assets/kenney/space-shooter-redux/license.txt)) | [OpenGameArt](https://opengameart.org/content/space-shooter-redux) |
 | `assets/kenney/sci-fi-sounds/explosionCrunch_000.ogg` | Enemy destroyed | Sci-Fi Sounds | [Kenney](https://www.kenney.nl) | CC0 ([license](assets/kenney/sci-fi-sounds/license.txt)) | [kenney.nl](https://kenney.nl/assets/sci-fi-sounds), [OpenGameArt](https://opengameart.org/content/sci-fi-sounds) |
 | `assets/kenney/sci-fi-sounds/explosionCrunch_001.ogg` | Player hit | Sci-Fi Sounds | [Kenney](https://www.kenney.nl) | CC0 ([license](assets/kenney/sci-fi-sounds/license.txt)) | [kenney.nl](https://kenney.nl/assets/sci-fi-sounds), [OpenGameArt](https://opengameart.org/content/sci-fi-sounds) |
 
@@ -28,12 +38,13 @@ The sprites in use are listed by their original names in [`tools/atlas.toml`](to
 
 ## 📺 CRT effect
 
-The screen border and scanlines are drawn in code by [`code/crt.py`](code/crt.py). No image is used.
+The screen border and scanlines are drawn in code by [`tlamina/visuals/crt.py`](tlamina/visuals/crt.py). No image is used.
 
 ## 🔤 Fonts and libraries
 
-- [pygame-ce](https://pyga.me/) (LGPL 2.1), including its bundled default font, FreeSansBold from [GNU FreeFont](https://www.gnu.org/software/freefont/) (GPL with font exception), used for the HUD.
+- Kenvector Future by [Kenney](https://www.kenney.nl), from the Space Shooter Redux pack's `Bonus/` folder (CC0, [license](assets/kenney/space-shooter-redux/license.txt)), used for the title and HUD: `assets/kenney/space-shooter-redux/kenvector_future.ttf`.
+- [pygame-ce](https://pyga.me/) (LGPL 2.1), including its bundled default font, FreeSansBold from [GNU FreeFont](https://www.gnu.org/software/freefont/) (GPL with font exception), which ships inside the executable but isn't used by the game.
 
 ## 💻 Code
 
-Tlamina started as my version of [Clear Code](https://www.youtube.com/@ClearCode)'s pygame Space Invaders tutorial ([repository](https://github.com/clear-code-projects/Space-invaders)). Since then it has been restructured and extended: delta-time movement, a sprite atlas pipeline, unit tests, CI, and the design documented in [`docs/`](docs/README.md). No art or audio from the tutorial is used.
+Tlamina started in 2021 as my version of [Clear Code](https://www.youtube.com/@ClearCode)'s pygame Space Invaders tutorial ([repository](https://github.com/clear-code-projects/Space-invaders)). No art or audio from the tutorial is used, and the code has since been rewritten and extended; the [README](README.md#-from-tutorial-to-finished-game) shows how it changed. The 2026 work was done with [Claude Code](https://claude.com/claude-code) as a pair programmer.

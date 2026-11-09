@@ -34,3 +34,7 @@ Check a download with `sha256sum SpaceShooterRedux.zip`. A different hash doesn'
 4. Commit `atlas.toml`, `assets/atlas.png`, and `assets/atlas.json` together.
 
 The script checks that every packed sprite matches its source pixel for pixel, and fails if a name is missing or duplicated.
+
+### Files outside the atlas
+
+Two files from the same pack are copied unmodified instead of packed, because they aren't sprites: the background tile `Backgrounds/darkPurple.png` and the font `Bonus/kenvector_future.ttf`. Both live in `assets/kenney/space-shooter-redux/`, next to the pack's sounds.

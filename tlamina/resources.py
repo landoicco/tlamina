@@ -5,7 +5,7 @@ from pathlib import Path
 
 import pygame
 
-from settings import SPRITE_SCALE
+from tlamina.settings import SPRITE_SCALE
 
 # PyInstaller unpacks bundled files into sys._MEIPASS; otherwise use the repo root.
 ROOT = Path(getattr(sys, '_MEIPASS', Path(__file__).resolve().parent.parent))
@@ -38,6 +38,17 @@ def load_sprite(name, scale=SPRITE_SCALE):
         return pygame.transform.smoothscale_by(sprite, scale)
     # A copy, so the sprite doesn't keep the whole atlas locked or referenced
     return sprite.copy()
+
+
+@cache
+def load_silhouette(name, color='white'):
+    """The sprite's shape filled with one color, for hit flashes."""
+    return pygame.mask.from_surface(load_sprite(name)).to_surface(setcolor=color, unsetcolor=(0, 0, 0, 0))
+
+
+@cache
+def load_font(size):
+    return pygame.font.Font(asset_path('assets/kenney/space-shooter-redux/kenvector_future.ttf'), size)
 
 
 @cache

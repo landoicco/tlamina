@@ -1,15 +1,17 @@
 import json
+import struct
 import tomllib
 from pathlib import Path
 
 import pygame
 import pytest
 
-import resources
-from enemy import Alien, Ufo
-from game import Game
-from laser import Laser
-from settings import UFO_SPRITES
+from tlamina import resources
+from tlamina.entities.enemy import Enemy, Ufo
+from tlamina.entities.laser import Laser
+from tlamina.entities.powerup import PowerUp
+from tlamina.game import Game
+from tlamina.settings import ENEMY_MODELS, ENEMY_ROW_COLORS, OBSTACLE_SPRITES, POWERUP_SPRITES, UFO_SPRITES
 
 ROOT = Path(__file__).resolve().parent.parent
 
@@ -41,20 +43,31 @@ def test_every_sprite_the_game_uses_is_in_the_atlas(monkeypatch, keys):
         return load_sprite(name, *args)
 
     # Patch the name each sprite module imported, then create every kind of sprite
-    for module in ('enemy', 'game', 'laser', 'obstacle', 'player'):
-        monkeypatch.setattr(f'{module}.load_sprite', recording_load_sprite)
+    modules = ('entities.enemy', 'game', 'entities.laser', 'entities.obstacle', 'entities.player', 'entities.powerup')
+    for module in modules:
+        monkeypatch.setattr(f'tlamina.{module}.load_sprite', recording_load_sprite)
     Game()
-    for color in UFO_SPRITES:
-        Ufo(color, 0, 0)
-    Alien('left')
+    for color in ENEMY_ROW_COLORS:
+        for model in range(1, ENEMY_MODELS + 1):
+            Enemy(color, model, 0, 0)
+    Ufo('left')
     Laser((0, 0), 1)
+    Laser((0, 0), 1, 'laserRed16')
+    for kind in POWERUP_SPRITES:
+        PowerUp((0, 0), kind)
 
     assert requested
     assert requested <= manifest_names()
 
 
+@pytest.mark.parametrize('sprites', [UFO_SPRITES, OBSTACLE_SPRITES], ids=['ufos', 'meteors'])
+def test_every_random_sprite_choice_is_in_the_atlas(sprites):
+    # These sprites are picked at random, so creating one doesn't prove they all exist
+    assert set(sprites) <= manifest_names()
+
+
 def test_missing_sprite_names_the_fix():
-    with pytest.raises(KeyError, match='tools/atlas.toml'):
+    with pytest.raises(KeyError, match=r'tools/atlas\.toml'):
         resources.load_sprite('notASprite')
 
 
@@ -66,3 +79,13 @@ def test_sprite_scale(scale):
     # pygame truncates the scaled size
     assert scaled.get_width() == int(original.get_width() * scale)
     assert scaled.get_height() == int(original.get_height() * scale)
+
+
+def test_the_executable_icon_is_a_valid_ico():
+    # PyInstaller fails the Windows build if the icon can't be read
+    data = (ROOT / 'assets' / 'icon.ico').read_bytes()
+    reserved, kind, count = struct.unpack_from('<HHH', data)
+
+    assert (reserved, kind) == (0, 1)
+    sizes = {struct.unpack_from('<B', data, 6 + 16 * i)[0] or 256 for i in range(count)}
+    assert {16, 32, 256} <= sizes

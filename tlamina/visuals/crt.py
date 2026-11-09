@@ -2,7 +2,14 @@ from random import randint
 
 import pygame
 
-from settings import CRT_ALPHA, CRT_CORNER_RADIUS, CRT_LINE_HEIGHT, CRT_VIGNETTE_SIZE, SCREEN_HEIGHT, SCREEN_WIDTH
+from tlamina.settings import (
+    CRT_ALPHA,
+    CRT_CORNER_RADIUS,
+    CRT_LINE_HEIGHT,
+    CRT_VIGNETTE_SIZE,
+    SCREEN_HEIGHT,
+    SCREEN_WIDTH,
+)
 
 
 class CRT:

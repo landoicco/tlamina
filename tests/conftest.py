@@ -1,7 +1,5 @@
 import os
-import sys
 from collections import defaultdict
-from pathlib import Path
 
 import pytest
 
@@ -10,11 +8,9 @@ os.environ.setdefault('SDL_VIDEODRIVER', 'dummy')
 os.environ.setdefault('SDL_AUDIODRIVER', 'dummy')
 os.environ.setdefault('PYGAME_HIDE_SUPPORT_PROMPT', '1')
 
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent / 'code'))
-
 import pygame
 
-from settings import SCREEN_HEIGHT, SCREEN_WIDTH
+from tlamina.settings import SCREEN_HEIGHT, SCREEN_WIDTH
 
 
 @pytest.fixture(scope='session', autouse=True)
@@ -24,6 +20,14 @@ def pygame_display():
     pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     yield
     pygame.quit()
+
+
+@pytest.fixture(autouse=True)
+def data_dir(monkeypatch, tmp_path):
+    """Keep saved data, like the high score, out of the real user folder."""
+    path = tmp_path / 'data'
+    monkeypatch.setenv('TLAMINA_DATA_DIR', str(path))
+    return path
 
 
 @pytest.fixture
@@ -36,6 +40,6 @@ def keys(monkeypatch):
 
 @pytest.fixture
 def game(keys):
-    from game import Game
+    from tlamina.game import Game
 
     return Game()
