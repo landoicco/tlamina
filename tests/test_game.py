@@ -2,7 +2,7 @@ import pygame
 import pytest
 
 from tlamina.entities.enemy import Ufo, enemy_sprite
-from tlamina.entities.laser import Arrow, Laser
+from tlamina.entities.laser import Arrow, Laser, Shot
 from tlamina.game import GAME_OVER, PLAYING, Game
 from tlamina.resources import load_sprite
 from tlamina.settings import (
@@ -526,3 +526,66 @@ def test_getting_hit_resets_the_combo(game):
 
     assert game.combo_hits == 0
     assert game.multiplier == 1
+
+
+# Shots with several lasers
+
+
+def three_laser_shot(game, positions):
+    shot = Shot(len(positions))
+    lasers = [Laser(pos, PLAYER_LASER_SPEED, shot=shot) for pos in positions]
+    game.player.sprite.lasers.add(*lasers)
+    return lasers
+
+
+def test_a_shot_is_a_miss_only_when_all_its_lasers_miss(game):
+    game.combo_hits = COMBO_STEP
+    enemy = game.enemies.sprites()[0]
+    top = (SCREEN_WIDTH / 2, 0)
+    three_laser_shot(game, [enemy.rect.center, top, top])
+
+    game.collision_checks()
+    game.update(1 / 10)
+
+    assert not enemy.alive()
+    assert game.combo_hits == COMBO_STEP + 1
+
+
+def test_a_shot_whose_lasers_all_escape_is_a_miss(game):
+    game.combo_hits = COMBO_STEP
+    top = (SCREEN_WIDTH / 2, 0)
+    three_laser_shot(game, [top, top, top])
+
+    game.update(1 / 10)
+
+    assert game.combo_hits == 0
+
+
+def test_the_miss_waits_for_the_last_laser_of_the_shot(game):
+    game.combo_hits = COMBO_STEP
+    escaping, still_flying = three_laser_shot(game, [(SCREEN_WIDTH / 2, 0), (100, 600)])[:2]
+
+    game.update(1 / 10)
+
+    assert not escaping.alive()
+    assert still_flying.alive()
+    assert game.combo_hits == COMBO_STEP
+
+
+@pytest.mark.parametrize('angle', [-12, 12])
+def test_angled_lasers_drift_sideways(angle):
+    laser = Laser((400, 400), PLAYER_LASER_SPEED, angle=angle)
+
+    laser.update(0.1)
+
+    assert (laser.rect.centerx > 400) == (angle > 0)
+    assert laser.rect.centery < 400
+
+
+def test_lasers_leaving_through_a_side_are_removed(game):
+    laser = Laser((SCREEN_WIDTH - 2, 400), PLAYER_LASER_SPEED, angle=80)
+    game.player.sprite.lasers.add(laser)
+
+    game.player.sprite.lasers.update(1 / 10)
+
+    assert not laser.alive()

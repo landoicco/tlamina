@@ -88,7 +88,6 @@ class Game:
     def update(self, dt):
         lasers_before = set(self.player.sprite.lasers)
         self.player.update(dt)
-        self.check_misses(lasers_before - set(self.player.sprite.lasers))
         self.ufo_timer(dt)
         self.enemy_shoot_timer(dt)
         self.collision_checks()
@@ -101,6 +100,8 @@ class Game:
         self.ufo.update(dt)
         self.effects.update(dt)
         self.wave_banner_left = max(self.wave_banner_left - dt, 0)
+        # Lasers can leave the screen or hit something at any point of the frame
+        self.check_misses(lasers_before - set(self.player.sprite.lasers))
 
     def draw(self, surface):
         world = self.world
@@ -195,7 +196,7 @@ class Game:
             # Enemy collisions; armored enemies survive a normal laser, and the arrow flies on
             enemies_hit = pygame.sprite.spritecollide(laser, self.enemies, False)
             if enemies_hit:
-                laser.hit_something = True
+                laser.shot.hit_something = True
                 for _ in enemies_hit:
                     self.register_hit()
                 destroyed = [enemy for enemy in enemies_hit if enemy.hit(laser.damage)]
@@ -213,7 +214,7 @@ class Game:
 
             # Ufo collisions
             for ufo in pygame.sprite.spritecollide(laser, self.ufo, True):
-                laser.hit_something = True
+                laser.shot.hit_something = True
                 self.register_hit()
                 points = UFO_POINTS * self.multiplier
                 self.score += points
@@ -273,7 +274,7 @@ class Game:
             self.effects.floating_text((player.rect.centerx, player.rect.top - 20), f'×{self.multiplier}', COMBO_COLOR)
 
     def check_misses(self, gone_lasers):
-        if any(laser.escaped and not laser.hit_something for laser in gone_lasers):
+        if any(laser.shot.missed for laser in gone_lasers):
             self.combo_hits = 0
 
     def draw_hud(self, surface):
