@@ -3,7 +3,21 @@
 # Add a name here and rerun tools/build_atlas.py to use a new sprite.
 
 [sprites]
-player = ['playerShip1_blue', 'playerLife1_blue']
-enemies = ['ufoRed', 'ufoGreen', 'ufoYellow', 'enemyBlack1']
-lasers = ['laserBlue16']
-obstacles = ['meteorBrown_big2']
+player = [
+    'playerShip1_blue', 'playerLife1_blue',
+    'playerShip1_damage1', 'playerShip1_damage2', 'playerShip1_damage3',
+    'fire14', 'fire15', 'shield1',
+]
+enemies = [
+    'enemyRed1', 'enemyRed2', 'enemyRed3', 'enemyRed4', 'enemyRed5',
+    'enemyGreen1', 'enemyGreen2', 'enemyGreen3', 'enemyGreen4', 'enemyGreen5',
+    'enemyBlue1', 'enemyBlue2', 'enemyBlue3', 'enemyBlue4', 'enemyBlue5',
+    'enemyBlack1', 'enemyBlack2', 'enemyBlack3', 'enemyBlack4', 'enemyBlack5',
+    'ufoRed', 'ufoGreen', 'ufoYellow', 'ufoBlue',
+]
+lasers = ['laserBlue16', 'laserRed16', 'laserBlue12', 'laserBlue08']
+obstacles = [
+    'meteorBrown_big1', 'meteorBrown_big2', 'meteorBrown_big3', 'meteorBrown_big4',
+    'meteorGrey_big1', 'meteorGrey_big2', 'meteorGrey_big3', 'meteorGrey_big4',
+]
+power_ups = ['powerupBlue_star', 'powerupYellow_bolt', 'powerupGreen_shield']

@@ -12,6 +12,8 @@ All sprites are packed into [`assets/atlas.png`](assets/atlas.png) by [`tools/bu
 
 The sprites in use are listed by their original names in [`tools/atlas.toml`](tools/atlas.toml).
 
+The background tile, `assets/kenney/space-shooter-redux/darkPurple.png`, comes unmodified from the same pack's `Backgrounds/` folder.
+
 ## 🔊 Sound effects
 
 | File | Used for | Pack | Author | License | Source |
@@ -32,6 +34,7 @@ The screen border and scanlines are drawn in code by [`code/crt.py`](code/crt.py
 
 ## 🔤 Fonts and libraries
 
+- Kenvector Future by [Kenney](https://www.kenney.nl), from the Space Shooter Redux pack's `Bonus/` folder (CC0, [license](assets/kenney/space-shooter-redux/license.txt)), used for the title and HUD: `assets/kenney/space-shooter-redux/kenvector_future.ttf`.
 - [pygame-ce](https://pyga.me/) (LGPL 2.1), including its bundled default font, FreeSansBold from [GNU FreeFont](https://www.gnu.org/software/freefont/) (GPL with font exception), used for the HUD.
 
 ## 💻 Code
