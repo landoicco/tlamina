@@ -40,6 +40,10 @@ ALIEN_SPAWN = (6.7, 13.3)  # random delay range
 OBSTACLE_AMOUNT = 4
 OBSTACLE_Y = 650
 
+# Scenes
+BLINK_PERIOD = 1.0  # s, for the blinking "press a key" prompts
+OVERLAY_ALPHA = 180  # how much the pause and game over screens darken the game behind them
+
 # CRT effect
 CRT_LINE_HEIGHT = 3
 CRT_ALPHA = (80, 90)

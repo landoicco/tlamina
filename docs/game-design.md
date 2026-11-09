@@ -24,7 +24,7 @@ Splash ──any key──▶ Playing ◀──Esc──▶ Paused
                   Game over ──Enter──▶ Playing
 ```
 
-- **Splash**: title, "by Lando Icaza", [licaza.dev](https://licaza.dev), the meaning of the name, and a blinking "Press any key to start" over the fleet moving in the background.
+- **Splash**: title, "by Lando Icaza", a clickable [licaza.dev](https://licaza.dev) link, and a blinking "Press any key to start" over the fleet moving in the background.
 - **Playing**: clear a wave and the next one starts, with no end.
 - **Game over**: final score, high score, and "Press Enter to play again".
 

@@ -41,6 +41,11 @@ def load_sprite(name, scale=SPRITE_SCALE):
 
 
 @cache
+def load_font(size):
+    return pygame.font.Font(asset_path('assets/kenney/space-shooter-redux/kenvector_future.ttf'), size)
+
+
+@cache
 def load_sound(relative_path, volume):
     sound = pygame.mixer.Sound(asset_path(relative_path))
     sound.set_volume(volume)

@@ -3,7 +3,8 @@ import os
 import pygame
 
 from crt import CRT
-from game import GAME_OVER, Game
+from resources import load_sound
+from scenes import SplashScene
 from settings import FPS, MAX_DT, SCREEN_HEIGHT, SCREEN_WIDTH
 
 
@@ -12,8 +13,11 @@ def main():
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     pygame.display.set_caption('Tlamina')
     clock = pygame.time.Clock()
-    game = Game()
+    scene = SplashScene()
     crt = CRT()
+
+    # Started once here, so it keeps playing across scenes and new runs
+    load_sound('assets/music/spacecrusher.ogg', 0.2).play(loops=-1)
 
     # Lets automated tests run the game for a fixed number of frames
     max_frames = int(os.environ.get('TLAMINA_MAX_FRAMES', '0'))
@@ -25,14 +29,13 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+            else:
+                scene = scene.handle_event(event)
 
-        game.update(dt)
-        # No game over screen yet, so losing still closes the game
-        if game.state == GAME_OVER:
-            running = False
+        scene = scene.update(dt)
 
         screen.fill((0, 0, 0))
-        game.draw(screen)
+        scene.draw(screen)
         crt.draw(screen)
 
         pygame.display.flip()

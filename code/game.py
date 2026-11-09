@@ -63,8 +63,6 @@ class Game:
         self.extra_spawn_time = uniform(*ALIEN_FIRST_SPAWN)
 
         # Audio
-        self.bg_music = load_sound('assets/music/spacecrusher.ogg', 0.2)
-        self.bg_music.play(loops=-1)
         self.explosion_sfx = load_sound('assets/kenney/sci-fi-sounds/explosionCrunch_000.ogg', 0.5)
         self.player_hit_sfx = load_sound('assets/kenney/sci-fi-sounds/explosionCrunch_001.ogg', 0.5)
         self.laser_sfx = load_sound('assets/kenney/space-shooter-redux/sfx_laser1.ogg', 0.3)
