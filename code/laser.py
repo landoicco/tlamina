@@ -5,9 +5,9 @@ from settings import SCREEN_HEIGHT
 
 
 class Laser(pygame.sprite.Sprite):
-    def __init__(self, pos, speed):
+    def __init__(self, pos, speed, sprite='laserBlue16'):
         super().__init__()
-        self.image = load_sprite('laserBlue16')
+        self.image = load_sprite(sprite)
         if speed > 0:
             # Lasers moving down point down
             self.image = pygame.transform.flip(self.image, False, True)
@@ -15,7 +15,7 @@ class Laser(pygame.sprite.Sprite):
         self.speed = speed
 
     def destroy(self):
-        if self.rect.y <= -50 or self.rect.y >= SCREEN_HEIGHT - 50:
+        if self.rect.bottom < 0 or self.rect.top > SCREEN_HEIGHT:
             self.kill()
 
     def update(self, dt):

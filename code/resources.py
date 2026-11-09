@@ -41,6 +41,12 @@ def load_sprite(name, scale=SPRITE_SCALE):
 
 
 @cache
+def load_silhouette(name, color='white'):
+    """The sprite's shape filled with one color, for hit flashes."""
+    return pygame.mask.from_surface(load_sprite(name)).to_surface(setcolor=color, unsetcolor=(0, 0, 0, 0))
+
+
+@cache
 def load_font(size):
     return pygame.font.Font(asset_path('assets/kenney/space-shooter-redux/kenvector_future.ttf'), size)
 

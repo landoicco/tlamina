@@ -69,8 +69,8 @@ class SplashScene(Scene):
 
     def update(self, dt):
         self.time += dt
-        self.backdrop.ufos.update(self.backdrop.ufo_x_speed, dt)
-        self.backdrop.ufo_position_checker()
+        self.backdrop.enemies.update(self.backdrop.enemy_x_speed, dt)
+        self.backdrop.enemy_position_checker()
 
         hovered = self.link_rect.collidepoint(pygame.mouse.get_pos())
         if hovered != self.link_hovered:
@@ -79,7 +79,7 @@ class SplashScene(Scene):
         return self
 
     def draw(self, surface):
-        self.backdrop.ufos.draw(surface)
+        self.backdrop.enemies.draw(surface)
         draw_text(surface, 'TLAMINA', 72, center=(CENTER_X, 520))
         if blink_on(self.time):
             draw_text(surface, 'Press any key to start', 20, center=(CENTER_X, 605))

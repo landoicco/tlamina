@@ -1,17 +1,23 @@
 import pygame
 import pytest
 
-from enemy import Alien
+from enemy import Ufo, enemy_sprite
 from game import GAME_OVER, PLAYING, Game
 from laser import Laser
+from resources import load_sprite
 from settings import (
-    ALIEN_POINTS,
+    ARMORED_FROM_WAVE,
+    ENEMY_COLS,
+    ENEMY_DROP,
+    ENEMY_FLASH_TIME,
+    ENEMY_LASER_SPEED,
+    ENEMY_MODELS,
+    ENEMY_ROW_COLORS,
     PLAYER_LASER_COOLDOWN,
     PLAYER_LASER_SPEED,
     PLAYER_LIVES,
     SCREEN_WIDTH,
-    UFO_DROP,
-    UFO_LASER_SPEED,
+    UFO_POINTS,
 )
 
 
@@ -21,36 +27,36 @@ def player_laser_at(game, pos):
     return laser
 
 
-def ufo_laser_at(game, pos):
-    laser = Laser(pos, UFO_LASER_SPEED)
-    game.ufo_lasers.add(laser)
+def enemy_laser_at(game, pos):
+    laser = Laser(pos, ENEMY_LASER_SPEED)
+    game.enemy_lasers.add(laser)
     return laser
 
 
 # Scoring
 
 
-def test_destroying_a_ufo_adds_its_points(game):
-    ufo = game.ufos.sprites()[0]
-    laser = player_laser_at(game, ufo.rect.center)
+def test_destroying_an_enemy_adds_its_points(game):
+    enemy = game.enemies.sprites()[0]
+    laser = player_laser_at(game, enemy.rect.center)
 
     game.collision_checks()
 
-    assert game.score == ufo.value
-    assert not ufo.alive()
+    assert game.score == enemy.value
+    assert not enemy.alive()
     assert not laser.alive()
 
 
-def test_destroying_the_bonus_alien_adds_bonus_points(game):
-    alien = Alien('left')
-    alien.rect.center = (SCREEN_WIDTH / 2, 100)
-    game.alien.add(alien)
-    player_laser_at(game, alien.rect.center)
+def test_destroying_the_bonus_ufo_adds_bonus_points(game):
+    ufo = Ufo('left')
+    ufo.rect.center = (SCREEN_WIDTH / 2, 100)
+    game.ufo.add(ufo)
+    player_laser_at(game, ufo.rect.center)
 
     game.collision_checks()
 
-    assert game.score == ALIEN_POINTS
-    assert not alien.alive()
+    assert game.score == UFO_POINTS
+    assert not ufo.alive()
 
 
 def test_obstacles_block_player_lasers(game):
@@ -68,7 +74,7 @@ def test_obstacles_block_player_lasers(game):
 
 
 def test_getting_hit_costs_a_life(game):
-    laser = ufo_laser_at(game, game.player.sprite.rect.center)
+    laser = enemy_laser_at(game, game.player.sprite.rect.center)
 
     game.collision_checks()
 
@@ -79,7 +85,7 @@ def test_getting_hit_costs_a_life(game):
 
 def test_losing_the_last_life_ends_the_game(game):
     game.lives = 1
-    ufo_laser_at(game, game.player.sprite.rect.center)
+    enemy_laser_at(game, game.player.sprite.rect.center)
 
     game.collision_checks()
 
@@ -87,49 +93,49 @@ def test_losing_the_last_life_ends_the_game(game):
     assert game.state == GAME_OVER
 
 
-def test_a_ufo_reaching_the_player_ends_the_game(game):
-    game.ufos.sprites()[0].rect.center = game.player.sprite.rect.center
+def test_an_enemy_reaching_the_player_ends_the_game(game):
+    game.enemies.sprites()[0].rect.center = game.player.sprite.rect.center
 
     game.collision_checks()
 
     assert game.state == GAME_OVER
 
 
-# Ufo fleet
+# Enemy fleet
 
 
 def move_fleet_to_right_edge(game):
-    rightmost = max(ufo.rect.right for ufo in game.ufos)
-    for ufo in game.ufos:
-        ufo.rect.x += SCREEN_WIDTH - rightmost
+    rightmost = max(enemy.rect.right for enemy in game.enemies)
+    for enemy in game.enemies:
+        enemy.rect.x += SCREEN_WIDTH - rightmost
 
 
-@pytest.mark.parametrize('ufos_left_in_edge_column', [1, 2, 3])
-def test_fleet_bounces_once_per_edge_hit(game, ufos_left_in_edge_column):
-    rightmost = max(ufo.rect.right for ufo in game.ufos)
-    edge_column = [ufo for ufo in game.ufos if ufo.rect.right == rightmost]
-    for ufo in edge_column[ufos_left_in_edge_column:]:
-        ufo.kill()
+@pytest.mark.parametrize('enemies_left_in_edge_column', [1, 2, 3])
+def test_fleet_bounces_once_per_edge_hit(game, enemies_left_in_edge_column):
+    rightmost = max(enemy.rect.right for enemy in game.enemies)
+    edge_column = [enemy for enemy in game.enemies if enemy.rect.right == rightmost]
+    for enemy in edge_column[enemies_left_in_edge_column:]:
+        enemy.kill()
     move_fleet_to_right_edge(game)
-    top_before = min(ufo.rect.top for ufo in game.ufos)
-    speed_before = game.ufo_x_speed
+    top_before = min(enemy.rect.top for enemy in game.enemies)
+    speed_before = game.enemy_x_speed
 
-    game.ufo_position_checker()
-    game.ufo_position_checker()
+    game.enemy_position_checker()
+    game.enemy_position_checker()
 
-    assert game.ufo_x_speed == -speed_before
-    assert min(ufo.rect.top for ufo in game.ufos) == top_before + UFO_DROP
+    assert game.enemy_x_speed == -speed_before
+    assert min(enemy.rect.top for enemy in game.enemies) == top_before + ENEMY_DROP
 
 
 def fleet_position_after(seconds, fps):
     game = Game()
     game.obstacles.empty()
-    game.ufo_shoot = lambda: None
+    game.enemy_shoot = lambda: None
     for _ in range(round(seconds * fps)):
-        game.ufos.update(game.ufo_x_speed, 1 / fps)
-        game.ufo_position_checker()
-    ufo = min(game.ufos, key=lambda u: (u.rect.top, u.rect.left))
-    return ufo.rect.left, ufo.rect.top
+        game.enemies.update(game.enemy_x_speed, 1 / fps)
+        game.enemy_position_checker()
+    enemy = min(game.enemies, key=lambda e: (e.rect.top, e.rect.left))
+    return enemy.rect.left, enemy.rect.top
 
 
 @pytest.mark.parametrize('fps', [30, 144])
@@ -141,30 +147,30 @@ def test_fleet_movement_does_not_depend_on_frame_rate(keys, fps):
     assert top == expected_top
 
 
-# Lasers and bonus alien
+# Lasers and bonus ufo
 
 
 def test_lasers_are_removed_off_screen(game):
     up = player_laser_at(game, (SCREEN_WIDTH / 2, 0))
-    down = ufo_laser_at(game, (SCREEN_WIDTH / 2, game.player.sprite.rect.bottom))
+    down = enemy_laser_at(game, (SCREEN_WIDTH / 2, game.player.sprite.rect.bottom))
 
     for _ in range(10):
         game.player.sprite.lasers.update(1 / 60)
-        game.ufo_lasers.update(1 / 60)
+        game.enemy_lasers.update(1 / 60)
 
     assert not up.alive()
     assert not down.alive()
 
 
 @pytest.mark.parametrize('side', ['left', 'right'])
-def test_bonus_alien_is_removed_after_crossing_the_screen(game, side):
-    alien = Alien(side)
-    game.alien.add(alien)
+def test_bonus_ufo_is_removed_after_crossing_the_screen(game, side):
+    ufo = Ufo(side)
+    game.ufo.add(ufo)
 
     for _ in range(60 * 10):
-        game.alien.update(1 / 60)
+        game.ufo.update(1 / 60)
 
-    assert not alien.alive()
+    assert not ufo.alive()
 
 
 # Player
@@ -192,3 +198,78 @@ def test_player_stays_on_screen(game, keys):
         player.update(1 / 60)
 
     assert player.rect.right <= SCREEN_WIDTH
+
+
+# Waves
+
+
+def clear_wave(game):
+    game.enemies.empty()
+    game.update(0)
+
+
+def test_clearing_the_fleet_starts_a_faster_wave(game):
+    speed_before = abs(game.enemy_x_speed)
+    interval_before = game.enemy_laser_interval
+
+    clear_wave(game)
+
+    assert game.wave == 2
+    assert len(game.enemies) == len(ENEMY_ROW_COLORS) * ENEMY_COLS
+    assert abs(game.enemy_x_speed) > speed_before
+    assert game.enemy_laser_interval < interval_before
+
+
+def test_each_wave_uses_the_next_enemy_model(game):
+    for wave in range(1, ENEMY_MODELS + 2):
+        model = (wave - 1) % ENEMY_MODELS + 1
+        for enemy in game.enemies:
+            assert enemy.image in {load_sprite(enemy_sprite(color, model)) for color in ENEMY_ROW_COLORS}
+        clear_wave(game)
+
+
+def back_row(game):
+    top = min(enemy.rect.top for enemy in game.enemies)
+    return [enemy for enemy in game.enemies if enemy.rect.top == top]
+
+
+def test_the_back_row_is_armored_from_wave_3(game):
+    while game.wave < ARMORED_FROM_WAVE - 1:
+        clear_wave(game)
+    assert all(enemy.health == 1 for enemy in game.enemies)
+
+    clear_wave(game)
+
+    armored = back_row(game)
+    assert len(armored) == ENEMY_COLS
+    assert all(enemy.health == 2 for enemy in armored)
+    assert all(enemy.health == 1 for enemy in game.enemies if enemy not in armored)
+
+
+def test_an_armored_enemy_takes_two_hits(game):
+    enemy = game.enemies.sprites()[0]
+    enemy.health = 2
+
+    first = player_laser_at(game, enemy.rect.center)
+    game.collision_checks()
+
+    assert enemy.alive()
+    assert not first.alive()
+    assert game.score == 0
+    assert enemy.image is enemy.flash_image
+
+    player_laser_at(game, enemy.rect.center)
+    game.collision_checks()
+
+    assert not enemy.alive()
+    assert game.score == enemy.value
+
+
+def test_the_hit_flash_wears_off(game):
+    enemy = game.enemies.sprites()[0]
+    enemy.health = 2
+    enemy.hit()
+
+    enemy.update(0, ENEMY_FLASH_TIME + 0.01)
+
+    assert enemy.image is enemy.normal_image

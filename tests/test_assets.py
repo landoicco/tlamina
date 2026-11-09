@@ -6,10 +6,10 @@ import pygame
 import pytest
 
 import resources
-from enemy import Alien, Ufo
+from enemy import Enemy, Ufo
 from game import Game
 from laser import Laser
-from settings import UFO_SPRITES
+from settings import ENEMY_MODELS, ENEMY_ROW_COLORS, UFO_SPRITES
 
 ROOT = Path(__file__).resolve().parent.parent
 
@@ -44,13 +44,20 @@ def test_every_sprite_the_game_uses_is_in_the_atlas(monkeypatch, keys):
     for module in ('enemy', 'game', 'laser', 'obstacle', 'player'):
         monkeypatch.setattr(f'{module}.load_sprite', recording_load_sprite)
     Game()
-    for color in UFO_SPRITES:
-        Ufo(color, 0, 0)
-    Alien('left')
+    for color in ENEMY_ROW_COLORS:
+        for model in range(1, ENEMY_MODELS + 1):
+            Enemy(color, model, 0, 0)
+    Ufo('left')
     Laser((0, 0), 1)
+    Laser((0, 0), 1, 'laserRed16')
 
     assert requested
     assert requested <= manifest_names()
+
+
+def test_every_bonus_ufo_color_is_in_the_atlas():
+    # The bonus ufo picks one at random, so check them all
+    assert set(UFO_SPRITES) <= manifest_names()
 
 
 def test_missing_sprite_names_the_fix():

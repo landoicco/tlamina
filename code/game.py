@@ -2,31 +2,37 @@ from random import choice, uniform
 
 import pygame
 
-from enemy import Alien, Ufo
+from enemy import Enemy, Ufo
 from laser import Laser
 from obstacle import Rock
 from player import Player
 from resources import load_sound, load_sprite
 from settings import (
-    ALIEN_FIRST_SPAWN,
-    ALIEN_POINTS,
-    ALIEN_SPAWN,
+    ARMORED_FROM_WAVE,
+    ENEMY_COLS,
+    ENEMY_DROP,
+    ENEMY_LASER_INTERVAL,
+    ENEMY_LASER_SPEED,
+    ENEMY_MODELS,
+    ENEMY_ROW_COLORS,
+    ENEMY_SPEED,
+    ENEMY_X_DISTANCE,
+    ENEMY_X_OFFSET,
+    ENEMY_Y_DISTANCE,
+    ENEMY_Y_OFFSET,
     OBSTACLE_AMOUNT,
     OBSTACLE_Y,
     PLAYER_LIVES,
     SCREEN_HEIGHT,
     SCREEN_WIDTH,
-    UFO_COLS,
-    UFO_DROP,
-    UFO_LASER_INTERVAL,
-    UFO_LASER_SPEED,
-    UFO_ROW_COLORS,
-    UFO_SPEED,
-    UFO_X_DISTANCE,
-    UFO_X_OFFSET,
-    UFO_Y_DISTANCE,
-    UFO_Y_OFFSET,
+    UFO_FIRST_SPAWN,
+    UFO_POINTS,
+    UFO_SPAWN,
+    WAVE_BANNER_TIME,
+    WAVE_FIRE_RATE_UP,
+    WAVE_SPEED_UP,
 )
+from ui import draw_text
 
 PLAYING = 'playing'
 GAME_OVER = 'game_over'
@@ -51,16 +57,15 @@ class Game:
         obstacle_x_positions = [num * (SCREEN_WIDTH / OBSTACLE_AMOUNT) for num in range(OBSTACLE_AMOUNT)]
         self.create_multiple_obstacles(SCREEN_WIDTH / 8, OBSTACLE_Y, *obstacle_x_positions)
 
-        # Ufo setup
-        self.ufos = pygame.sprite.Group()
-        self.ufos_setup()
-        self.ufo_x_speed = UFO_SPEED
-        self.ufo_lasers = pygame.sprite.Group()
-        self.ufo_shoot_time = UFO_LASER_INTERVAL
+        # Enemy fleet setup
+        self.enemies = pygame.sprite.Group()
+        self.enemy_lasers = pygame.sprite.Group()
+        self.wave = 0
+        self.start_next_wave()
 
-        # Extra alien setup
-        self.alien = pygame.sprite.GroupSingle()
-        self.extra_spawn_time = uniform(*ALIEN_FIRST_SPAWN)
+        # Bonus ufo setup
+        self.ufo = pygame.sprite.GroupSingle()
+        self.ufo_spawn_time = uniform(*UFO_FIRST_SPAWN)
 
         # Audio
         self.explosion_sfx = load_sound('assets/kenney/sci-fi-sounds/explosionCrunch_000.ogg', 0.5)
@@ -69,76 +74,92 @@ class Game:
 
     def update(self, dt):
         self.player.update(dt)
-        self.extra_alien_timer(dt)
-        self.ufo_shoot_timer(dt)
+        self.ufo_timer(dt)
+        self.enemy_shoot_timer(dt)
         self.collision_checks()
+        if not self.enemies:
+            self.start_next_wave()
 
-        self.ufos.update(self.ufo_x_speed, dt)
-        self.ufo_position_checker()
-        self.ufo_lasers.update(dt)
-        self.alien.update(dt)
+        self.enemies.update(self.enemy_x_speed, dt)
+        self.enemy_position_checker()
+        self.enemy_lasers.update(dt)
+        self.ufo.update(dt)
+        self.wave_banner_left = max(self.wave_banner_left - dt, 0)
 
     def draw(self, surface):
         self.player.sprite.lasers.draw(surface)
         self.player.draw(surface)
         self.display_lives(surface)
         self.display_score(surface)
-        self.ufos.draw(surface)
-        self.ufo_lasers.draw(surface)
+        self.enemies.draw(surface)
+        self.enemy_lasers.draw(surface)
         self.obstacles.draw(surface)
-        self.alien.draw(surface)
+        self.ufo.draw(surface)
+        if self.wave_banner_left:
+            draw_text(surface, f'WAVE {self.wave}', 36, center=(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2))
 
     def create_multiple_obstacles(self, x_start, y_start, *offset):
         for offset_x in offset:
             new_obstacle = Rock((x_start + offset_x, y_start))
             self.obstacles.add(new_obstacle)
 
-    def ufo_position_checker(self):
-        # Reverse once per edge hit, no matter how many ufo's touch it
-        if not self.ufos:
+    def start_next_wave(self):
+        # Every wave is the same formation, faster, shooting more often, and with a new enemy model
+        self.wave += 1
+        level = self.wave - 1
+        self.enemy_x_speed = ENEMY_SPEED * WAVE_SPEED_UP**level
+        self.enemy_laser_interval = ENEMY_LASER_INTERVAL / WAVE_FIRE_RATE_UP**level
+        self.enemy_shoot_time = self.enemy_laser_interval
+        self.enemies_setup(model=level % ENEMY_MODELS + 1, armored=self.wave >= ARMORED_FROM_WAVE)
+        self.wave_banner_left = WAVE_BANNER_TIME
+
+    def enemies_setup(self, model, armored):
+        for row_index, color in enumerate(ENEMY_ROW_COLORS):
+            health = 2 if armored and row_index == 0 else 1
+            for col_index in range(ENEMY_COLS):
+                x = col_index * ENEMY_X_DISTANCE + ENEMY_X_OFFSET
+                y = row_index * ENEMY_Y_DISTANCE + ENEMY_Y_OFFSET
+                self.enemies.add(Enemy(color, model, x, y, health))
+
+    def enemy_position_checker(self):
+        # Reverse once per edge hit, no matter how many enemies touch it
+        if not self.enemies:
             return
-        overshoot_right = max(ufo.rect.right for ufo in self.ufos) - SCREEN_WIDTH
-        overshoot_left = -min(ufo.rect.left for ufo in self.ufos)
-        if overshoot_right >= 0 and self.ufo_x_speed > 0:
-            self.ufo_bounce(-2 * overshoot_right)
-        elif overshoot_left >= 0 and self.ufo_x_speed < 0:
-            self.ufo_bounce(2 * overshoot_left)
+        overshoot_right = max(enemy.rect.right for enemy in self.enemies) - SCREEN_WIDTH
+        overshoot_left = -min(enemy.rect.left for enemy in self.enemies)
+        if overshoot_right >= 0 and self.enemy_x_speed > 0:
+            self.enemy_bounce(-2 * overshoot_right)
+        elif overshoot_left >= 0 and self.enemy_x_speed < 0:
+            self.enemy_bounce(2 * overshoot_left)
 
-    def ufo_bounce(self, x_correction):
+    def enemy_bounce(self, x_correction):
         # Reflect the distance travelled past the edge, so bounces don't depend on the frame rate
-        for ufo in self.ufos:
-            ufo.rect.x += x_correction
-        self.ufo_x_speed *= -1
-        self.ufo_move_down(UFO_DROP)
+        for enemy in self.enemies:
+            enemy.rect.x += x_correction
+        self.enemy_x_speed *= -1
+        self.enemy_move_down(ENEMY_DROP)
 
-    def ufo_move_down(self, distance):
-        for ufo in self.ufos:
-            ufo.rect.y += distance
+    def enemy_move_down(self, distance):
+        for enemy in self.enemies:
+            enemy.rect.y += distance
 
-    def ufo_shoot_timer(self, dt):
-        self.ufo_shoot_time -= dt
-        if self.ufo_shoot_time <= 0:
-            self.ufo_shoot()
-            self.ufo_shoot_time += UFO_LASER_INTERVAL
+    def enemy_shoot_timer(self, dt):
+        self.enemy_shoot_time -= dt
+        if self.enemy_shoot_time <= 0:
+            self.enemy_shoot()
+            self.enemy_shoot_time += self.enemy_laser_interval
 
-    def ufo_shoot(self):
-        if self.ufos:
-            random_ufo = choice(self.ufos.sprites())
-            self.ufo_lasers.add(Laser(random_ufo.rect.center, UFO_LASER_SPEED))
+    def enemy_shoot(self):
+        if self.enemies:
+            random_enemy = choice(self.enemies.sprites())
+            self.enemy_lasers.add(Laser(random_enemy.rect.center, ENEMY_LASER_SPEED, 'laserRed16'))
             self.laser_sfx.play()
 
-    def ufos_setup(self):
-        for row_index, color in enumerate(UFO_ROW_COLORS):
-            for col_index in range(UFO_COLS):
-                x = col_index * UFO_X_DISTANCE + UFO_X_OFFSET
-                y = row_index * UFO_Y_DISTANCE + UFO_Y_OFFSET
-                self.ufos.add(Ufo(color, x, y))
-
-    def extra_alien_timer(self, dt):
-        self.extra_spawn_time -= dt
-        if self.extra_spawn_time <= 0:
-            self.alien.add(Alien(choice(['right', 'left'])))
-            self.extra_spawn_time = uniform(*ALIEN_SPAWN)
+    def ufo_timer(self, dt):
+        self.ufo_spawn_time -= dt
+        if self.ufo_spawn_time <= 0:
+            self.ufo.add(Ufo(choice(['right', 'left'])))
+            self.ufo_spawn_time = uniform(*UFO_SPAWN)
 
     def collision_checks(self):
         # Player lasers
@@ -147,22 +168,24 @@ class Game:
             if pygame.sprite.spritecollide(laser, self.obstacles, True):
                 laser.kill()
 
+            # Enemy collisions; armored enemies survive their first hit
+            enemies_hit = pygame.sprite.spritecollide(laser, self.enemies, False)
+            if enemies_hit:
+                destroyed = [enemy for enemy in enemies_hit if enemy.hit()]
+                for enemy in destroyed:
+                    self.score += enemy.value
+                if destroyed:
+                    self.explosion_sfx.play()
+                laser.kill()
+
             # Ufo collisions
-            ufos_hit = pygame.sprite.spritecollide(laser, self.ufos, True)
-            if ufos_hit:
-                for ufo in ufos_hit:
-                    self.score += ufo.value
+            if pygame.sprite.spritecollide(laser, self.ufo, True):
+                self.score += UFO_POINTS
                 self.explosion_sfx.play()
                 laser.kill()
 
-            # Alien collisions
-            if pygame.sprite.spritecollide(laser, self.alien, True):
-                self.score += ALIEN_POINTS
-                self.explosion_sfx.play()
-                laser.kill()
-
-        # Ufo lasers
-        for laser in self.ufo_lasers:
+        # Enemy lasers
+        for laser in self.enemy_lasers:
             # Player collisions
             if pygame.sprite.spritecollide(laser, self.player, False):
                 laser.kill()
@@ -175,10 +198,10 @@ class Game:
             if pygame.sprite.spritecollide(laser, self.obstacles, True):
                 laser.kill()
 
-        # Ufo's
-        for ufo in self.ufos:
-            pygame.sprite.spritecollide(ufo, self.obstacles, True)
-            if pygame.sprite.spritecollide(ufo, self.player, False):
+        # Enemies
+        for enemy in self.enemies:
+            pygame.sprite.spritecollide(enemy, self.obstacles, True)
+            if pygame.sprite.spritecollide(enemy, self.player, False):
                 self.state = GAME_OVER
 
     def display_lives(self, surface):

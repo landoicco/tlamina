@@ -73,12 +73,12 @@ def test_losing_window_focus_pauses(playing):
 
 def test_the_game_does_not_move_while_paused(playing):
     paused = playing.handle_event(key_down(pygame.K_ESCAPE))
-    positions = [ufo.rect.topleft for ufo in playing.game.ufos]
+    positions = [enemy.rect.topleft for enemy in playing.game.enemies]
 
     for _ in range(60):
         paused.update(1 / 60)
 
-    assert [ufo.rect.topleft for ufo in playing.game.ufos] == positions
+    assert [enemy.rect.topleft for enemy in playing.game.enemies] == positions
 
 
 def test_game_over_shows_the_game_over_scene(playing):
