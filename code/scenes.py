@@ -3,6 +3,7 @@ import webbrowser
 import pygame
 
 from game import GAME_OVER, Game
+from highscore import load_high_score, save_high_score
 from resources import load_font, load_sound
 from settings import BLINK_PERIOD, OVERLAY_ALPHA, SCREEN_HEIGHT, SCREEN_WIDTH
 from ui import draw_text
@@ -55,6 +56,7 @@ class SplashScene(Scene):
         # Only the fleet of this game is used, as a moving backdrop
         self.backdrop = Game()
         self.time = 0
+        self.high_score = load_high_score()
         self.link_rect = pygame.Rect((0, 0), load_font(PORTFOLIO_SIZE).size(PORTFOLIO_TEXT))
         self.link_rect.center = (CENTER_X, 712)
         self.link_hovered = False
@@ -80,9 +82,11 @@ class SplashScene(Scene):
 
     def draw(self, surface):
         self.backdrop.enemies.draw(surface)
-        draw_text(surface, 'TLAMINA', 72, center=(CENTER_X, 520))
+        draw_text(surface, 'TLAMINA', 72, center=(CENTER_X, 515))
+        if self.high_score:
+            draw_text(surface, f'High score {self.high_score}', 16, 'gray70', center=(CENTER_X, 565))
         if blink_on(self.time):
-            draw_text(surface, 'Press any key to start', 20, center=(CENTER_X, 605))
+            draw_text(surface, 'Press any key to start', 20, center=(CENTER_X, 615))
         draw_text(surface, 'by Lando Icaza', 14, 'gray70', center=(CENTER_X, 690))
         if self.link_hovered:
             draw_text(surface, PORTFOLIO_TEXT, PORTFOLIO_SIZE, center=self.link_rect.center)
@@ -133,6 +137,11 @@ class GameOverScene(Scene):
     def __init__(self, game):
         self.game = game
         self.time = 0
+        self.high_score = load_high_score()
+        self.new_record = game.score > self.high_score
+        if self.new_record:
+            self.high_score = game.score
+            save_high_score(game.score)
 
     def handle_event(self, event):
         if pressed(event, pygame.K_RETURN, pygame.K_KP_ENTER):
@@ -146,7 +155,11 @@ class GameOverScene(Scene):
     def draw(self, surface):
         self.game.draw(surface)
         dim(surface)
-        draw_text(surface, 'GAME OVER', 48, center=(CENTER_X, CENTER_Y - 40))
-        draw_text(surface, f'Score {self.game.score}', 24, center=(CENTER_X, CENTER_Y + 20))
+        draw_text(surface, 'GAME OVER', 48, center=(CENTER_X, CENTER_Y - 60))
+        draw_text(surface, f'Score {self.game.score}', 24, center=(CENTER_X, CENTER_Y))
+        if self.new_record:
+            draw_text(surface, 'New high score', 18, 'gold', center=(CENTER_X, CENTER_Y + 40))
+        else:
+            draw_text(surface, f'High score {self.high_score}', 18, 'gray70', center=(CENTER_X, CENTER_Y + 40))
         if blink_on(self.time):
-            draw_text(surface, 'Press Enter to play again', 18, center=(CENTER_X, CENTER_Y + 80))
+            draw_text(surface, 'Press Enter to play again', 18, center=(CENTER_X, CENTER_Y + 100))

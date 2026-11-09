@@ -12,6 +12,7 @@ def test_game_runs_headless(tmp_path):
         'SDL_VIDEODRIVER': 'dummy',
         'SDL_AUDIODRIVER': 'dummy',
         'TLAMINA_MAX_FRAMES': '120',
+        'TLAMINA_DATA_DIR': str(tmp_path / 'data'),
     }
     # Run from an unrelated directory to make sure asset paths don't depend on it
     result = subprocess.run(

@@ -26,6 +26,14 @@ def pygame_display():
     pygame.quit()
 
 
+@pytest.fixture(autouse=True)
+def data_dir(monkeypatch, tmp_path):
+    """Keep saved data, like the high score, out of the real user folder."""
+    path = tmp_path / 'data'
+    monkeypatch.setenv('TLAMINA_DATA_DIR', str(path))
+    return path
+
+
 @pytest.fixture
 def keys(monkeypatch):
     """Keys held down during the test; add pygame key constants to press them."""
