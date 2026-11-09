@@ -2,7 +2,7 @@
 
 ## Problem
 
-Every laser, UFO, and meteor needs an image. Before this pattern was applied, each new laser read and decoded its PNG from disk, several times per second during play. The pixels were identical every time.
+Every laser, enemy, meteor, and particle effect needs an image. Before this pattern was applied, each new laser read and decoded its PNG from disk, several times per second during play. The pixels were identical every time.
 
 ## Pattern
 
@@ -14,10 +14,10 @@ Every laser, UFO, and meteor needs an image. Before this pattern was applied, ea
 
 | | Data | Where |
 |---|---|---|
-| **Intrinsic** (shared) | Image pixels, sound samples | `resources.load_sprite()`, `resources.load_sound()` |
-| **Extrinsic** (per object) | Position (`rect`), speed, point value | Each sprite instance |
+| **Intrinsic** (shared) | Image pixels, hit-flash silhouettes, sound samples, fonts | `resources.load_sprite()`, `load_silhouette()`, `load_sound()`, `load_font()` |
+| **Extrinsic** (per object) | Position (`rect`), speed, health, point value | Each sprite instance |
 
-`resources.py` caches every loaded asset with `functools.cache`, so all UFOs of the same color, and every laser ever fired, share one surface:
+`resources.py` caches every loaded asset with `functools.cache`, so all enemies of the same color and model, and every laser ever fired, share one surface:
 
 ```python
 @cache
@@ -34,6 +34,6 @@ Sounds are cached by `(path, volume)`, since the volume is stored on the sound o
 
 - ✅ The atlas is read from disk once per run, and each sprite is cut and scaled once.
 - ✅ Changing `SPRITE_SCALE` resizes every sprite without touching the art.
-- ⚠️ **Shared surfaces must not be modified.** Drawing on a cached image would change it for every sprite that uses it. `CRT` draws its vignette and scanlines on a surface of its own instead.
-- ⚠️ Downward lasers call `pygame.transform.flip()` on each shot, which creates a new 13×54 surface every time. It's cheap, but the flipped image could be cached as well.
+- ⚠️ **Shared surfaces must not be modified.** Drawing on a cached image would change it for every sprite that uses it. `CRT` draws its vignette and scanlines on a surface of its own instead, and the player's damage cracks are drawn on a copy of the ship.
+- ⚠️ Downward and angled lasers call `pygame.transform.flip()` or `rotate()` on each shot, which creates a new small surface every time. It's cheap, but those images could be cached as well.
 - ❌ The cache never evicts anything. That's fine because the full asset set fits in a few megabytes.
