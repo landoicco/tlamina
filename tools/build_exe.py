@@ -32,6 +32,8 @@ def build_executable():
         '--onefile',
         # No console window on Windows
         '--windowed',
+        # The file's icon in Windows Explorer and the taskbar; Linux executables don't have one
+        '--icon', str(ROOT / 'assets' / 'icon.ico'),
         # __main__.py imports the rest of the tlamina package, found from the repo root
         '--paths', str(ROOT),
         # Bundled under sys._MEIPASS/assets, where resources.py looks for them

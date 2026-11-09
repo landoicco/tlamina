@@ -1,4 +1,5 @@
 import json
+import struct
 import tomllib
 from pathlib import Path
 
@@ -78,3 +79,13 @@ def test_sprite_scale(scale):
     # pygame truncates the scaled size
     assert scaled.get_width() == int(original.get_width() * scale)
     assert scaled.get_height() == int(original.get_height() * scale)
+
+
+def test_the_executable_icon_is_a_valid_ico():
+    # PyInstaller fails the Windows build if the icon can't be read
+    data = (ROOT / 'assets' / 'icon.ico').read_bytes()
+    reserved, kind, count = struct.unpack_from('<HHH', data)
+
+    assert (reserved, kind) == (0, 1)
+    sizes = {struct.unpack_from('<B', data, 6 + 16 * i)[0] or 256 for i in range(count)}
+    assert {16, 32, 256} <= sizes

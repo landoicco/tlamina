@@ -2,17 +2,26 @@ import os
 
 import pygame
 
-from tlamina.resources import load_sound
+from tlamina.resources import load_sound, load_sprite
 from tlamina.scenes import SplashScene
 from tlamina.settings import FPS, MAX_DT, SCREEN_HEIGHT, SCREEN_WIDTH
 from tlamina.visuals.background import Background
 from tlamina.visuals.crt import CRT
 
 
+def window_icon():
+    """The player ship centered on a transparent square, the same image as assets/icon.ico."""
+    ship = load_sprite('playerShip1_blue', 1)
+    icon = pygame.Surface((max(ship.get_size()),) * 2, pygame.SRCALPHA)
+    icon.blit(ship, ship.get_rect(center=icon.get_rect().center))
+    return icon
+
+
 def main():
     pygame.init()
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     pygame.display.set_caption('Tlamina')
+    pygame.display.set_icon(window_icon())
     clock = pygame.time.Clock()
     scene = SplashScene()
     background = Background()
