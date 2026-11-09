@@ -173,11 +173,29 @@ Each phase is one pull request into `master`.
 - [ ] Architecture section in the README linking the design docs
 - [ ] Gameplay GIF and download link to the latest release
 
+## 🌱 From tutorial to finished game
+
+Tlamina started in December 2021 as my take on [Clear Code](https://www.youtube.com/@ClearCode)'s [pygame Space Invaders tutorial](https://github.com/clear-code-projects/Space-invaders), and the first commits follow the video step by step. In 2026 I came back to it to turn it into a complete, polished game, and to practice what a small project looks like when it's built properly.
+
+| | Tutorial starting point | Tlamina today |
+|---|---|---|
+| **Gameplay** | One fleet, one kind of shot | Endless waves, armored enemies, charged arrow, combo multiplier, power-ups |
+| **Screens** | The window closes on game over | Splash, pause, and game over screens, and a saved high score |
+| **Art and audio** | The tutorial's own files | Kenney's CC0 packs, packed into a sprite atlas by a script; CRT effect drawn in code |
+| **Feel** | Sprites disappear on hit | Explosions, floating points, damage cracks, screen shake |
+| **Code** | A few modules with global state, frame-based movement | A `tlamina` package organized by role, delta-time movement, design patterns documented in [`docs/`](docs/README.md) |
+| **Quality** | No tests | 105 tests, strict linting, CI on every pull request |
+| **Distribution** | Run from source | Linux and Windows executables built and released automatically |
+
+### 🤖 Built with AI assistance
+
+The 2026 work was done with [Claude Code](https://claude.com/claude-code) as a pair programmer. I set the direction and made the design decisions, from the [game design document](docs/game-design.md) to how the code is organized, reviewed every change, and made every commit. Claude Code helped write the code, the tests, and the documentation, and reviewed the project for bugs along the way.
+
 ## 🎨 Credits
 
 The art and audio in this game are **not my own work**, and I do not own the rights to them. Sprites and sound effects are by [Kenney](https://www.kenney.nl) and the music is by [yd](https://opengameart.org/users/yd), all released under CC0. See [`CREDITS.md`](CREDITS.md) for per-asset attribution.
 
-The code started from [Clear Code](https://www.youtube.com/@ClearCode)'s pygame Space Invaders tutorial and has since been restructured and extended; [`CREDITS.md`](CREDITS.md) has the details.
+The code started from [Clear Code](https://www.youtube.com/@ClearCode)'s pygame Space Invaders tutorial; see [From tutorial to finished game](#-from-tutorial-to-finished-game) for how it grew from there.
 
 ## 📄 License
 

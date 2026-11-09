@@ -47,4 +47,4 @@ The screen border and scanlines are drawn in code by [`tlamina/visuals/crt.py`](
 
 ## 💻 Code
 
-Tlamina started as my version of [Clear Code](https://www.youtube.com/@ClearCode)'s pygame Space Invaders tutorial ([repository](https://github.com/clear-code-projects/Space-invaders)). Since then it has been restructured and extended: delta-time movement, a sprite atlas pipeline, unit tests, CI, and the design documented in [`docs/`](docs/README.md). No art or audio from the tutorial is used.
+Tlamina started in 2021 as my version of [Clear Code](https://www.youtube.com/@ClearCode)'s pygame Space Invaders tutorial ([repository](https://github.com/clear-code-projects/Space-invaders)). No art or audio from the tutorial is used, and the code has since been rewritten and extended; the [README](README.md#-from-tutorial-to-finished-game) shows how it changed. The 2026 work was done with [Claude Code](https://claude.com/claude-code) as a pair programmer.
