@@ -1,6 +1,8 @@
 # 🛸 Tlamina
 
 [![CI](https://github.com/landoicco/tlamina/actions/workflows/ci.yml/badge.svg)](https://github.com/landoicco/tlamina/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/landoicco/tlamina)](https://github.com/landoicco/tlamina/releases/latest)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 ![Python](https://img.shields.io/badge/python-3.11%2B-3776AB?logo=python&logoColor=white)
 ![pygame-ce](https://img.shields.io/badge/pygame--ce-2.5%2B-5E9A2B)
 ![Nix flake](https://img.shields.io/badge/nix-flake-5277C3?logo=nixos&logoColor=white)
@@ -28,6 +30,17 @@ A retro space shooter built with [pygame-ce](https://pyga.me/). Dodge enemy fire
 | 🟡 Yellow UFO | 20 |
 | 🟢 Green UFO | 30 |
 | 👽 Bonus alien | 100 |
+
+## 📥 Download
+
+Get the latest build for Windows or Linux from the [releases page](https://github.com/landoicco/tlamina/releases/latest). Each package contains a single executable, no installation needed.
+
+- 🪟 **Windows**: unzip `tlamina-windows.zip` and run `Tlamina.exe`. The executable isn't signed, so Windows SmartScreen may warn about it the first time: choose *More info* → *Run anyway*.
+- 🐧 **Linux**: extract `tlamina-linux.tar.gz` and run `./Tlamina`. Builds target glibc 2.35 or newer (Ubuntu 22.04 and later).
+
+Builds of every pull request are also available as artifacts on its CI run. Artifacts don't keep file permissions, so on Linux run `chmod +x Tlamina` first.
+
+To build an executable yourself, run `uv run --group build python tools/build_exe.py`; the result goes to `dist/`.
 
 ## 🚀 Running from source
 
@@ -116,7 +129,15 @@ Each phase is one pull request into `master`.
 - [x] `CREDITS.md` with per-asset attribution
 - [x] Design docs for the patterns already in use (`docs/`)
 
-### ✨ 5. Gameplay: `feat/gameplay`
+### 📦 5. Executables: `ci/release-builds`
+- [x] Single-file PyInstaller builds for Linux (`ubuntu-22.04`) and Windows, smoke-tested in CI
+- [x] Executables uploaded as artifacts on every PR
+- [x] Automatic GitHub Release when a `v*` tag is pushed
+- [x] Code license (MIT, excluding the assets) and third-party notices for the bundled libraries
+- [x] Ship `LICENSE`, `CREDITS.md`, and the notices inside the packages
+- [x] Release and license badges
+
+### ✨ 6. Gameplay: `feat/gameplay`
 - [ ] Scenes for the start screen, gameplay, and game over with restart (*State* pattern)
 - [ ] Waves defined as data, with increasing difficulty and a different enemy look per wave (*Type Object* pattern)
 - [ ] Obstacles that take several hits and shrink as they get damaged
@@ -124,15 +145,7 @@ Each phase is one pull request into `master`.
 - [ ] Tests for scenes, waves, and obstacles
 - [ ] Design docs for the new patterns
 
-### 📦 6. Executables: `ci/release-builds`
-- [ ] PyInstaller builds for Linux (`ubuntu-22.04`) and Windows
-- [ ] Executables uploaded as artifacts on every PR
-- [ ] Automatic GitHub Release when a `v*` tag is pushed
-- [ ] Ship `LICENSE` and `CREDITS.md` inside the packages
-- [ ] Latest release badge
-
 ### 📝 7. Documentation: `docs/portfolio`
-- [ ] Code license (excluding the assets) and license badge
 - [ ] Architecture section in the README linking the design docs
 - [ ] Gameplay GIF and download link to the latest release
 
@@ -141,3 +154,7 @@ Each phase is one pull request into `master`.
 The art and audio in this game are **not my own work**, and I do not own the rights to them. Sprites and sound effects are by [Kenney](https://www.kenney.nl) and the music is by [yd](https://opengameart.org/users/yd), all released under CC0. See [`CREDITS.md`](CREDITS.md) for per-asset attribution.
 
 The code started from [Clear Code](https://www.youtube.com/@ClearCode)'s pygame Space Invaders tutorial and has since been restructured and extended; [`CREDITS.md`](CREDITS.md) has the details.
+
+## 📄 License
+
+The code is released under the [MIT License](LICENSE). The art and audio in `assets/` are not covered by it; see [`CREDITS.md`](CREDITS.md). The executables also bundle third-party libraries under their own licenses; see [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md).

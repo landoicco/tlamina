@@ -1,0 +1,47 @@
+name: Build
+
+# Reusable: called by ci.yml on every pull request and by release.yml on tags
+on:
+  workflow_call:
+
+jobs:
+  executable:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # 22.04 has an older glibc, so the Linux binary runs on more distros
+          - os: ubuntu-22.04
+            package: tlamina-linux
+            executable: Tlamina
+          - os: windows-latest
+            package: tlamina-windows
+            executable: Tlamina.exe
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: '3.12'
+      - run: uv sync --group build
+      - run: uv run python tools/build_exe.py
+
+      - name: Smoke test the executable
+        shell: bash
+        # A crash in a windowed Windows build opens an error dialog instead of
+        # exiting, so a hang counts as a failure
+        timeout-minutes: 3
+        env:
+          SDL_VIDEODRIVER: dummy
+          SDL_AUDIODRIVER: dummy
+          TLAMINA_MAX_FRAMES: '120'
+          EXECUTABLE: ${{ github.workspace }}/dist/${{ matrix.package }}/${{ matrix.executable }}
+        run: |
+          cd "$RUNNER_TEMP"
+          "$EXECUTABLE"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.package }}
+          path: dist/${{ matrix.package }}/
+          retention-days: 14

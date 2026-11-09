@@ -1,0 +1,49 @@
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+
+jobs:
+  check-version:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Tag matches the version in pyproject.toml
+        run: |
+          version=$(python3 -c "import tomllib; print(tomllib.load(open('pyproject.toml', 'rb'))['project']['version'])")
+          if [ "v$version" != "$GITHUB_REF_NAME" ]; then
+            echo "::error::Tag $GITHUB_REF_NAME does not match version $version in pyproject.toml"
+            exit 1
+          fi
+
+  build:
+    needs: check-version
+    uses: ./.github/workflows/build.yml
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          path: packages
+      - name: Archive packages
+        working-directory: packages
+        run: |
+          # Artifacts don't keep file permissions
+          chmod +x tlamina-linux/Tlamina
+          tar -czf tlamina-linux.tar.gz tlamina-linux
+          zip -r tlamina-windows.zip tlamina-windows
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" \
+            packages/tlamina-linux.tar.gz \
+            packages/tlamina-windows.zip \
+            --title "Tlamina $GITHUB_REF_NAME" \
+            --generate-notes
