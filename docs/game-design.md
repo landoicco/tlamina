@@ -42,7 +42,7 @@ Splash ──any key──▶ Playing ◀──Esc──▶ Paused
 
 ### Charged arrow
 
-Pressing Space fires a normal laser right away. Keep holding it for 0.8 s to charge the arrow, shown by a glow on the ship; releasing it fires an arrow that goes through every enemy in its path. Releasing early fires nothing extra. Meteors still stop it.
+Each press of Space fires one normal laser right away; holding it doesn't keep firing. Keep holding it for 0.8 s to charge the arrow, shown by a glow on the ship's nose that pulses when ready; releasing it fires an arrow that goes through every enemy in its path and destroys armored ones in one hit. Releasing early fires nothing extra. Meteors still stop it.
 
 ### Combo
 

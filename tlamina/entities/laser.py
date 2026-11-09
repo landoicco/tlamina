@@ -1,13 +1,16 @@
 import pygame
 
 from tlamina.resources import load_sprite
-from tlamina.settings import SCREEN_HEIGHT
+from tlamina.settings import ARROW_DAMAGE, ARROW_SCALE, ARROW_SPEED, SCREEN_HEIGHT, SPRITE_SCALE
 
 
 class Laser(pygame.sprite.Sprite):
-    def __init__(self, pos, speed, sprite='laserBlue16'):
+    damage = 1
+    pierce = False  # whether it flies on after hitting an enemy
+
+    def __init__(self, pos, speed, sprite='laserBlue16', scale=SPRITE_SCALE):
         super().__init__()
-        self.image = load_sprite(sprite)
+        self.image = load_sprite(sprite, scale)
         if speed > 0:
             # Lasers moving down point down
             self.image = pygame.transform.flip(self.image, False, True)
@@ -21,3 +24,13 @@ class Laser(pygame.sprite.Sprite):
     def update(self, dt):
         self.rect.y += self.speed * dt
         self.destroy()
+
+
+class Arrow(Laser):
+    """The charged shot: bigger, faster, and it flies through enemies instead of stopping."""
+
+    damage = ARROW_DAMAGE
+    pierce = True
+
+    def __init__(self, pos):
+        super().__init__(pos, ARROW_SPEED, 'laserBlue12', ARROW_SCALE)

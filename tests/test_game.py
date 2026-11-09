@@ -2,11 +2,12 @@ import pygame
 import pytest
 
 from tlamina.entities.enemy import Ufo, enemy_sprite
-from tlamina.entities.laser import Laser
+from tlamina.entities.laser import Arrow, Laser
 from tlamina.game import GAME_OVER, PLAYING, Game
 from tlamina.resources import load_sprite
 from tlamina.settings import (
     ARMORED_FROM_WAVE,
+    ARROW_CHARGE_TIME,
     ENEMY_COLS,
     ENEMY_DROP,
     ENEMY_FLASH_TIME,
@@ -251,18 +252,98 @@ def test_bonus_ufo_is_removed_after_crossing_the_screen(game, side):
 # Player
 
 
-def test_player_shooting_respects_the_cooldown(game, keys):
+def tap_space(player, keys, dt=0):
     keys.add(pygame.K_SPACE)
+    player.update(dt)
+    keys.discard(pygame.K_SPACE)
+    player.update(0)
+
+
+def hold_space(player, keys, seconds):
+    keys.add(pygame.K_SPACE)
+    for _ in range(round(seconds * 60)):
+        player.update(1 / 60)
+
+
+def test_each_press_fires_one_laser_within_the_cooldown(game, keys):
     player = game.player.sprite
 
-    player.update(0)
+    tap_space(player, keys)
     assert len(player.lasers) == 1
 
-    player.update(PLAYER_LASER_COOLDOWN - 0.05)
+    tap_space(player, keys, PLAYER_LASER_COOLDOWN - 0.05)
     assert len(player.lasers) == 1
 
-    player.update(0.1)
+    tap_space(player, keys, 0.1)
     assert len(player.lasers) == 2
+
+
+def test_holding_space_does_not_keep_firing(game, keys):
+    player = game.player.sprite
+
+    # Long enough to fire again if holding fired, short enough for the first laser to still be on screen
+    hold_space(player, keys, 2 * PLAYER_LASER_COOLDOWN)
+
+    assert len(player.lasers) == 1
+
+
+def test_releasing_a_full_charge_fires_an_arrow(game, keys):
+    player = game.player.sprite
+
+    hold_space(player, keys, ARROW_CHARGE_TIME + 0.05)
+    assert player.charge == 1
+    keys.discard(pygame.K_SPACE)
+    player.update(0)
+
+    assert sum(isinstance(laser, Arrow) for laser in player.lasers) == 1
+    assert player.charge == 0
+
+
+def test_releasing_early_fires_no_arrow(game, keys):
+    player = game.player.sprite
+
+    hold_space(player, keys, ARROW_CHARGE_TIME / 2)
+    assert 0 < player.charge < 1
+    keys.discard(pygame.K_SPACE)
+    player.update(0)
+
+    assert not any(isinstance(laser, Arrow) for laser in player.lasers)
+
+
+def arrow_at(game, pos):
+    arrow = Arrow(pos)
+    game.player.sprite.lasers.add(arrow)
+    return arrow
+
+
+def test_the_arrow_flies_through_enemies(game):
+    enemy = game.enemies.sprites()[0]
+    arrow = arrow_at(game, enemy.rect.center)
+
+    game.collision_checks()
+
+    assert not enemy.alive()
+    assert arrow.alive()
+
+
+def test_the_arrow_destroys_armored_enemies_in_one_hit(game):
+    enemy = game.enemies.sprites()[0]
+    enemy.health = 2
+    arrow_at(game, enemy.rect.center)
+
+    game.collision_checks()
+
+    assert not enemy.alive()
+    assert game.score == enemy.value
+
+
+def test_meteors_stop_the_arrow(game):
+    rock = game.obstacles.sprites()[0]
+    arrow = arrow_at(game, rock.rect.center)
+
+    game.collision_checks()
+
+    assert not arrow.alive()
 
 
 def test_player_stays_on_screen(game, keys):

@@ -17,6 +17,11 @@ PLAYER_LASER_COOLDOWN = 0.6
 PLAYER_Y = SCREEN_HEIGHT - 30  # bottom of the ship, leaving room for the engine flame below it
 ENGINE_FLAME_FRAMES = ['fire14', 'fire15']
 ENGINE_FLAME_FRAME_TIME = 0.06
+ARROW_CHARGE_TIME = 0.8  # how long Space must be held to charge the arrow
+ARROW_SPEED = -720
+ARROW_SCALE = 0.9  # bigger than the other sprites, so it reads as the strong shot
+ARROW_DAMAGE = 2  # enough to destroy an armored enemy in one hit
+CHARGE_GLOW_COLOR = (120, 190, 255)
 PLAYER_INVULNERABLE_TIME = 1.5  # after a hit, so one burst of fire can't take several lives
 PLAYER_BLINK_RATE = 10  # blinks per second while invulnerable
 

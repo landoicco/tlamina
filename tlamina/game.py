@@ -102,6 +102,7 @@ class Game:
         if self.player.sprite.visible:
             self.player.sprite.draw_engine_flame(world)
             self.player.draw(world)
+            self.player.sprite.draw_charge_glow(world)
         self.enemies.draw(world)
         self.enemy_lasers.draw(world)
         self.obstacles.draw(world)
@@ -184,10 +185,10 @@ class Game:
                 self.break_rocks(rocks)
                 laser.kill()
 
-            # Enemy collisions; armored enemies survive their first hit
+            # Enemy collisions; armored enemies survive a normal laser, and the arrow flies on
             enemies_hit = pygame.sprite.spritecollide(laser, self.enemies, False)
             if enemies_hit:
-                destroyed = [enemy for enemy in enemies_hit if enemy.hit()]
+                destroyed = [enemy for enemy in enemies_hit if enemy.hit(laser.damage)]
                 for enemy in destroyed:
                     self.score += enemy.value
                     self.effects.explosion(enemy.rect.center, EXPLOSION_COLORS[enemy.color])
@@ -196,7 +197,8 @@ class Game:
                     self.explosion_sfx.play()
                 else:
                     self.effects.spark(laser.rect.midtop)
-                laser.kill()
+                if not laser.pierce:
+                    laser.kill()
 
             # Ufo collisions
             for ufo in pygame.sprite.spritecollide(laser, self.ufo, True):
@@ -204,7 +206,8 @@ class Game:
                 self.effects.explosion(ufo.rect.center, EXPLOSION_COLORS['ufo'], 2 * EXPLOSION_PARTICLES)
                 self.effects.floating_text(ufo.rect.center, f'+{UFO_POINTS}', EXPLOSION_COLORS['ufo'])
                 self.explosion_sfx.play()
-                laser.kill()
+                if not laser.pierce:
+                    laser.kill()
 
         # Enemy lasers
         player = self.player.sprite

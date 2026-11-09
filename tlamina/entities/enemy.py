@@ -23,9 +23,9 @@ class Enemy(pygame.sprite.Sprite):
         self.health = health
         self.flash_left = 0
 
-    def hit(self):
-        """Take one hit and return whether it destroyed the enemy."""
-        self.health -= 1
+    def hit(self, damage=1):
+        """Take a hit and return whether it destroyed the enemy."""
+        self.health -= damage
         if self.health <= 0:
             self.kill()
             return True
