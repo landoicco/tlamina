@@ -9,13 +9,10 @@
 ![pygame-ce](https://img.shields.io/badge/pygame--ce-2.5%2B-5E9A2B)
 ![Nix flake](https://img.shields.io/badge/nix-flake-5277C3?logo=nixos&logoColor=white)
 ![Platforms](https://img.shields.io/badge/platforms-Linux%20%7C%20Windows-lightgrey)
-![Status](https://img.shields.io/badge/status-work%20in%20progress-orange)
 
 A retro space shooter built with [pygame-ce](https://pyga.me/). Hold off an alien fleet that comes back faster every wave: take cover behind the meteors, charge arrows that pierce whole columns, chain hits into a score multiplier, and grab the power-ups the bonus ufo drops. 👾
 
 > 🏹 **Tlamina** is a Nahuatl verb meaning *to shoot arrows* ([Gran Diccionario Náhuatl](https://gdn.iib.unam.mx/diccionario/tlamina)). In this game, your strongest weapon is a charged arrow that flies through every enemy in its path.
-
-> 🚧 Work in progress. See the [roadmap](#-roadmap) for the current status.
 
 ## 🎮 How to play
 
