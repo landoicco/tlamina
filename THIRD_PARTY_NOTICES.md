@@ -13,7 +13,7 @@ For the game's art and audio, see [CREDITS.md](CREDITS.md).
 | Python | [PSF License 2.0](https://docs.python.org/3/license.html) | [python.org](https://www.python.org) |
 | PyInstaller bootloader | GPL-2.0 with an exception that allows distributing the built executable under any license | [pyinstaller.org](https://pyinstaller.org) |
 | pygame-ce | LGPL-2.1 ([text](licenses/LGPL-2.1.txt)) | [github.com/pygame-community/pygame-ce](https://github.com/pygame-community/pygame-ce) |
-| FreeSansBold font (bundled with pygame-ce, used for the HUD) | GPL-3.0 with font exception ([text](licenses/GPL-3.0.txt)) | [GNU FreeFont](https://www.gnu.org/software/freefont/) |
+| FreeSansBold font (bundled with pygame-ce, not used by the game) | GPL-3.0 with font exception ([text](licenses/GPL-3.0.txt)) | [GNU FreeFont](https://www.gnu.org/software/freefont/) |
 
 ## Native libraries
 

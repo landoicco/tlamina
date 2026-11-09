@@ -2,7 +2,14 @@ import pygame
 
 from laser import Laser
 from resources import load_sound, load_sprite
-from settings import PLAYER_LASER_COOLDOWN, PLAYER_LASER_SPEED, PLAYER_SPEED, SCREEN_WIDTH
+from settings import (
+    ENGINE_FLAME_FRAME_TIME,
+    ENGINE_FLAME_FRAMES,
+    PLAYER_LASER_COOLDOWN,
+    PLAYER_LASER_SPEED,
+    PLAYER_SPEED,
+    SCREEN_WIDTH,
+)
 
 
 class Player(pygame.sprite.Sprite):
@@ -12,6 +19,8 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_frect(midbottom=pos)
         self.speed = PLAYER_SPEED
         self.cooldown_left = 0
+        self.flame_frames = [load_sprite(name) for name in ENGINE_FLAME_FRAMES]
+        self.flame_time = 0
 
         self.lasers = pygame.sprite.Group()
 
@@ -39,7 +48,13 @@ class Player(pygame.sprite.Sprite):
         self.rect.right = min(self.rect.right, SCREEN_WIDTH)
         self.rect.left = max(self.rect.left, 0)
 
+    def draw_engine_flame(self, surface):
+        frame = self.flame_frames[int(self.flame_time / ENGINE_FLAME_FRAME_TIME) % len(self.flame_frames)]
+        # Tucked a few pixels under the hull, so it looks attached to the engine
+        surface.blit(frame, frame.get_rect(midtop=(self.rect.centerx, self.rect.bottom - 4)))
+
     def update(self, dt):
+        self.flame_time += dt
         self.recharge(dt)
         self.get_input(dt)
         self.constraint()

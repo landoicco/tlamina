@@ -14,6 +14,9 @@ PLAYER_SPEED = 300
 PLAYER_LIVES = 3
 PLAYER_LASER_SPEED = -480
 PLAYER_LASER_COOLDOWN = 0.6
+PLAYER_Y = SCREEN_HEIGHT - 30  # bottom of the ship, leaving room for the engine flame below it
+ENGINE_FLAME_FRAMES = ['fire14', 'fire15']
+ENGINE_FLAME_FRAME_TIME = 0.06
 
 # Enemy fleet
 ENEMY_ROW_COLORS = ['black', 'blue', 'green', 'red']  # from the back row to the front
@@ -47,6 +50,16 @@ UFO_SPAWN = (6.7, 13.3)  # random delay range
 # Obstacles
 OBSTACLE_AMOUNT = 4
 OBSTACLE_Y = 650
+OBSTACLE_SPRITES = [f'meteor{color}_big{number}' for color in ('Brown', 'Grey') for number in range(1, 5)]
+
+# Background
+BACKGROUND_DARKEN = 90  # 0 to 255, how much darker than Kenney's tile
+STAR_AMOUNT = 60
+STAR_SPEED = (15, 60)  # random range; faster stars are drawn brighter
+
+# HUD
+HUD_FONT_SIZE = 16
+HUD_MARGIN = 14
 
 # Scenes
 BLINK_PERIOD = 1.0  # s, for the blinking "press a key" prompts

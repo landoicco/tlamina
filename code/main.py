@@ -2,6 +2,7 @@ import os
 
 import pygame
 
+from background import Background
 from crt import CRT
 from resources import load_sound
 from scenes import SplashScene
@@ -14,6 +15,7 @@ def main():
     pygame.display.set_caption('Tlamina')
     clock = pygame.time.Clock()
     scene = SplashScene()
+    background = Background()
     crt = CRT()
 
     # Started once here, so it keeps playing across scenes and new runs
@@ -32,9 +34,11 @@ def main():
             else:
                 scene = scene.handle_event(event)
 
+        # The background keeps drifting in every scene, even while paused
+        background.update(dt)
         scene = scene.update(dt)
 
-        screen.fill((0, 0, 0))
+        background.draw(screen)
         scene.draw(screen)
         crt.draw(screen)
 

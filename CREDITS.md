@@ -36,7 +36,7 @@ The screen border and scanlines are drawn in code by [`code/crt.py`](code/crt.py
 ## 🔤 Fonts and libraries
 
 - Kenvector Future by [Kenney](https://www.kenney.nl), from the Space Shooter Redux pack's `Bonus/` folder (CC0, [license](assets/kenney/space-shooter-redux/license.txt)), used for the title and HUD: `assets/kenney/space-shooter-redux/kenvector_future.ttf`.
-- [pygame-ce](https://pyga.me/) (LGPL 2.1), including its bundled default font, FreeSansBold from [GNU FreeFont](https://www.gnu.org/software/freefont/) (GPL with font exception), used for the HUD.
+- [pygame-ce](https://pyga.me/) (LGPL 2.1), including its bundled default font, FreeSansBold from [GNU FreeFont](https://www.gnu.org/software/freefont/) (GPL with font exception), which ships inside the executable but isn't used by the game.
 
 ## 💻 Code
 

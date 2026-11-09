@@ -20,9 +20,12 @@ from settings import (
     ENEMY_X_OFFSET,
     ENEMY_Y_DISTANCE,
     ENEMY_Y_OFFSET,
+    HUD_FONT_SIZE,
+    HUD_MARGIN,
     OBSTACLE_AMOUNT,
     OBSTACLE_Y,
     PLAYER_LIVES,
+    PLAYER_Y,
     SCREEN_HEIGHT,
     SCREEN_WIDTH,
     UFO_FIRST_SPAWN,
@@ -42,15 +45,13 @@ class Game:
     def __init__(self):
         self.state = PLAYING
 
-        player_sprite = Player((SCREEN_WIDTH / 2, SCREEN_HEIGHT - 5))
+        player_sprite = Player((SCREEN_WIDTH / 2, PLAYER_Y))
         self.player = pygame.sprite.GroupSingle(player_sprite)
 
         # Health and score setup
         self.lives = PLAYER_LIVES
-        self.live_surface = load_sprite('playerLife1_blue')
-        self.live_x_start_pos = SCREEN_WIDTH - (self.live_surface.get_size()[0] * 2 + 20)
+        self.life_icon = load_sprite('playerLife1_blue')
         self.score = 0
-        self.font = pygame.font.Font(None, 20)
 
         # Obstacles setup
         self.obstacles = pygame.sprite.Group()
@@ -88,13 +89,13 @@ class Game:
 
     def draw(self, surface):
         self.player.sprite.lasers.draw(surface)
+        self.player.sprite.draw_engine_flame(surface)
         self.player.draw(surface)
-        self.display_lives(surface)
-        self.display_score(surface)
         self.enemies.draw(surface)
         self.enemy_lasers.draw(surface)
         self.obstacles.draw(surface)
         self.ufo.draw(surface)
+        self.draw_hud(surface)
         if self.wave_banner_left:
             draw_text(surface, f'WAVE {self.wave}', 36, center=(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2))
 
@@ -204,12 +205,10 @@ class Game:
             if pygame.sprite.spritecollide(enemy, self.player, False):
                 self.state = GAME_OVER
 
-    def display_lives(self, surface):
-        for live in range(self.lives - 1):
-            x = self.live_x_start_pos + (live * (self.live_surface.get_size()[0] + 5))
-            surface.blit(self.live_surface, (x, 15))
-
-    def display_score(self, surface):
-        score_surface = self.font.render(f'Score: {self.score}', False, 'white')
-        score_rect = score_surface.get_rect(topleft=(5, 5))
-        surface.blit(score_surface, score_rect)
+    def draw_hud(self, surface):
+        draw_text(surface, f'Score {self.score}', HUD_FONT_SIZE, topleft=(HUD_MARGIN, HUD_MARGIN))
+        draw_text(surface, f'Wave {self.wave}', HUD_FONT_SIZE, 'gray70', midtop=(SCREEN_WIDTH / 2, HUD_MARGIN))
+        # One icon per life left, right-aligned
+        icon_width = self.life_icon.get_width() + 6
+        for life in range(self.lives):
+            surface.blit(self.life_icon, self.life_icon.get_rect(topright=(SCREEN_WIDTH - HUD_MARGIN - life * icon_width, HUD_MARGIN)))

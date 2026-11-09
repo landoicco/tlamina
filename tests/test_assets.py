@@ -9,7 +9,7 @@ import resources
 from enemy import Enemy, Ufo
 from game import Game
 from laser import Laser
-from settings import ENEMY_MODELS, ENEMY_ROW_COLORS, UFO_SPRITES
+from settings import ENEMY_MODELS, ENEMY_ROW_COLORS, OBSTACLE_SPRITES, UFO_SPRITES
 
 ROOT = Path(__file__).resolve().parent.parent
 
@@ -55,9 +55,10 @@ def test_every_sprite_the_game_uses_is_in_the_atlas(monkeypatch, keys):
     assert requested <= manifest_names()
 
 
-def test_every_bonus_ufo_color_is_in_the_atlas():
-    # The bonus ufo picks one at random, so check them all
-    assert set(UFO_SPRITES) <= manifest_names()
+@pytest.mark.parametrize('sprites', [UFO_SPRITES, OBSTACLE_SPRITES], ids=['ufos', 'meteors'])
+def test_every_random_sprite_choice_is_in_the_atlas(sprites):
+    # These sprites are picked at random, so creating one doesn't prove they all exist
+    assert set(sprites) <= manifest_names()
 
 
 def test_missing_sprite_names_the_fix():
