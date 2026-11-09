@@ -1,7 +1,7 @@
 import pygame
 
-from resources import load_sprite
-from settings import SCREEN_HEIGHT
+from tlamina.resources import load_sprite
+from tlamina.settings import SCREEN_HEIGHT
 
 
 class Laser(pygame.sprite.Sprite):

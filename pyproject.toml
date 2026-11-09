@@ -21,7 +21,8 @@ package = false
 
 [tool.ruff]
 line-length = 120
-src = ["code"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+# Makes the tlamina package importable from the tests without installing it
+pythonpath = ["."]

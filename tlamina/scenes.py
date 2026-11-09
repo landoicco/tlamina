@@ -2,11 +2,11 @@ import webbrowser
 
 import pygame
 
-from game import GAME_OVER, Game
-from highscore import load_high_score, save_high_score
-from resources import load_font, load_sound
-from settings import BLINK_PERIOD, OVERLAY_ALPHA, SCREEN_HEIGHT, SCREEN_WIDTH
-from ui import draw_text
+from tlamina.game import GAME_OVER, Game
+from tlamina.highscore import load_high_score, save_high_score
+from tlamina.resources import load_font, load_sound
+from tlamina.settings import BLINK_PERIOD, OVERLAY_ALPHA, SCREEN_HEIGHT, SCREEN_WIDTH
+from tlamina.visuals.ui import draw_text
 
 CENTER_X = SCREEN_WIDTH / 2
 CENTER_Y = SCREEN_HEIGHT / 2

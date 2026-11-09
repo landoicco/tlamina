@@ -2,12 +2,12 @@ from random import choice, uniform
 
 import pygame
 
-from enemy import Enemy, Ufo
-from laser import Laser
-from obstacle import Rock
-from player import Player
-from resources import load_sound, load_sprite
-from settings import (
+from tlamina.entities.enemy import Enemy, Ufo
+from tlamina.entities.laser import Laser
+from tlamina.entities.obstacle import Rock
+from tlamina.entities.player import Player
+from tlamina.resources import load_sound, load_sprite
+from tlamina.settings import (
     ARMORED_FROM_WAVE,
     ENEMY_COLS,
     ENEMY_DROP,
@@ -35,7 +35,7 @@ from settings import (
     WAVE_FIRE_RATE_UP,
     WAVE_SPEED_UP,
 )
-from ui import draw_text
+from tlamina.visuals.ui import draw_text
 
 PLAYING = 'playing'
 GAME_OVER = 'game_over'

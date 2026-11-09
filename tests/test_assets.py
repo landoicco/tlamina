@@ -5,11 +5,11 @@ from pathlib import Path
 import pygame
 import pytest
 
-import resources
-from enemy import Enemy, Ufo
-from game import Game
-from laser import Laser
-from settings import ENEMY_MODELS, ENEMY_ROW_COLORS, OBSTACLE_SPRITES, UFO_SPRITES
+from tlamina import resources
+from tlamina.entities.enemy import Enemy, Ufo
+from tlamina.entities.laser import Laser
+from tlamina.game import Game
+from tlamina.settings import ENEMY_MODELS, ENEMY_ROW_COLORS, OBSTACLE_SPRITES, UFO_SPRITES
 
 ROOT = Path(__file__).resolve().parent.parent
 
@@ -41,8 +41,8 @@ def test_every_sprite_the_game_uses_is_in_the_atlas(monkeypatch, keys):
         return load_sprite(name, *args)
 
     # Patch the name each sprite module imported, then create every kind of sprite
-    for module in ('enemy', 'game', 'laser', 'obstacle', 'player'):
-        monkeypatch.setattr(f'{module}.load_sprite', recording_load_sprite)
+    for module in ('entities.enemy', 'game', 'entities.laser', 'entities.obstacle', 'entities.player'):
+        monkeypatch.setattr(f'tlamina.{module}.load_sprite', recording_load_sprite)
     Game()
     for color in ENEMY_ROW_COLORS:
         for model in range(1, ENEMY_MODELS + 1):

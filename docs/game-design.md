@@ -1,6 +1,6 @@
 # 🎯 Game design
 
-What Tlamina is trying to be, and what it is not. Numbers below are starting values; the real ones live in `code/settings.py` and get tuned by playing.
+What Tlamina is trying to be, and what it is not. Numbers below are starting values; the real ones live in `tlamina/settings.py` and get tuned by playing.
 
 ## 🏹 Pitch
 

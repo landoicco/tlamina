@@ -31,7 +31,7 @@ The background tile, `assets/kenney/space-shooter-redux/darkPurple.png`, comes u
 
 ## 📺 CRT effect
 
-The screen border and scanlines are drawn in code by [`code/crt.py`](code/crt.py). No image is used.
+The screen border and scanlines are drawn in code by [`tlamina/visuals/crt.py`](tlamina/visuals/crt.py). No image is used.
 
 ## 🔤 Fonts and libraries
 

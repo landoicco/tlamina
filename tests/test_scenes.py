@@ -1,9 +1,9 @@
 import pygame
 import pytest
 
-from game import GAME_OVER
-from scenes import GameOverScene, PausedScene, PlayingScene, SplashScene
-from settings import SCREEN_HEIGHT, SCREEN_WIDTH
+from tlamina.game import GAME_OVER
+from tlamina.scenes import GameOverScene, PausedScene, PlayingScene, SplashScene
+from tlamina.settings import SCREEN_HEIGHT, SCREEN_WIDTH
 
 
 def key_down(key):

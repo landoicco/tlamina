@@ -2,8 +2,8 @@ from random import randint, uniform
 
 import pygame
 
-from resources import load_image
-from settings import BACKGROUND_DARKEN, SCREEN_HEIGHT, SCREEN_WIDTH, STAR_AMOUNT, STAR_SPEED
+from tlamina.resources import load_image
+from tlamina.settings import BACKGROUND_DARKEN, SCREEN_HEIGHT, SCREEN_WIDTH, STAR_AMOUNT, STAR_SPEED
 
 
 class Background:

@@ -1,7 +1,7 @@
 import pygame
 
-from background import Background
-from settings import SCREEN_HEIGHT, SCREEN_WIDTH, STAR_AMOUNT, STAR_SPEED
+from tlamina.settings import SCREEN_HEIGHT, SCREEN_WIDTH, STAR_AMOUNT, STAR_SPEED
+from tlamina.visuals.background import Background
 
 
 def test_stars_drift_down():

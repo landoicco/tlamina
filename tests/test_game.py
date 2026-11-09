@@ -1,11 +1,11 @@
 import pygame
 import pytest
 
-from enemy import Ufo, enemy_sprite
-from game import GAME_OVER, PLAYING, Game
-from laser import Laser
-from resources import load_sprite
-from settings import (
+from tlamina.entities.enemy import Ufo, enemy_sprite
+from tlamina.entities.laser import Laser
+from tlamina.game import GAME_OVER, PLAYING, Game
+from tlamina.resources import load_sprite
+from tlamina.settings import (
     ARMORED_FROM_WAVE,
     ENEMY_COLS,
     ENEMY_DROP,

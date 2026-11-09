@@ -2,8 +2,8 @@ from random import choice
 
 import pygame
 
-from resources import load_silhouette, load_sprite
-from settings import ENEMY_FLASH_TIME, ENEMY_POINTS, SCREEN_WIDTH, UFO_SPEED, UFO_SPRITES, UFO_Y
+from tlamina.resources import load_silhouette, load_sprite
+from tlamina.settings import ENEMY_FLASH_TIME, ENEMY_POINTS, SCREEN_WIDTH, UFO_SPEED, UFO_SPRITES, UFO_Y
 
 
 def enemy_sprite(color, model):

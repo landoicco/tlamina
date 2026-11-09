@@ -13,10 +13,10 @@ Start with the [architecture overview](architecture.md).
 
 | Pattern | Book chapter | Status | Where |
 |---|---|---|---|
-| [Game Loop](patterns/game-loop.md) | Sequencing Patterns | ✅ In use | `main.py` |
+| [Game Loop](patterns/game-loop.md) | Sequencing Patterns | ✅ In use | `tlamina/__main__.py` |
 | [Update Method](patterns/update-method.md) | Sequencing Patterns | ✅ In use | `update(dt)` on `Game` and every sprite |
-| [Double Buffer](patterns/double-buffer.md) | Sequencing Patterns | ✅ In use (via pygame) | `pygame.display.flip()` in `main.py` |
-| [Flyweight](patterns/flyweight.md) | Design Patterns Revisited | ✅ In use | `resources.py` |
+| [Double Buffer](patterns/double-buffer.md) | Sequencing Patterns | ✅ In use (via pygame) | `pygame.display.flip()` in `tlamina/__main__.py` |
+| [Flyweight](patterns/flyweight.md) | Design Patterns Revisited | ✅ In use | `tlamina/resources.py` |
 | State | Design Patterns Revisited | 🗓️ Planned (phase 5) | Start, gameplay, and game over scenes |
 | Type Object | Behavioral Patterns | 🗓️ Planned (phase 5) | Waves and enemy types defined as data |
 | Observer | Design Patterns Revisited | 🤔 Under consideration | Decoupling audio and effects from collisions |

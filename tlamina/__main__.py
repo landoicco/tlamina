@@ -2,11 +2,11 @@ import os
 
 import pygame
 
-from background import Background
-from crt import CRT
-from resources import load_sound
-from scenes import SplashScene
-from settings import FPS, MAX_DT, SCREEN_HEIGHT, SCREEN_WIDTH
+from tlamina.resources import load_sound
+from tlamina.scenes import SplashScene
+from tlamina.settings import FPS, MAX_DT, SCREEN_HEIGHT, SCREEN_WIDTH
+from tlamina.visuals.background import Background
+from tlamina.visuals.crt import CRT
 
 
 def main():

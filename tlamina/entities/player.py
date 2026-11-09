@@ -1,8 +1,8 @@
 import pygame
 
-from laser import Laser
-from resources import load_sound, load_sprite
-from settings import (
+from tlamina.entities.laser import Laser
+from tlamina.resources import load_sound, load_sprite
+from tlamina.settings import (
     ENGINE_FLAME_FRAME_TIME,
     ENGINE_FLAME_FRAMES,
     PLAYER_LASER_COOLDOWN,

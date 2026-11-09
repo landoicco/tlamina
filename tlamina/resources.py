@@ -5,7 +5,7 @@ from pathlib import Path
 
 import pygame
 
-from settings import SPRITE_SCALE
+from tlamina.settings import SPRITE_SCALE
 
 # PyInstaller unpacks bundled files into sys._MEIPASS; otherwise use the repo root.
 ROOT = Path(getattr(sys, '_MEIPASS', Path(__file__).resolve().parent.parent))

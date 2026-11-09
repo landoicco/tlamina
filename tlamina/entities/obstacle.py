@@ -2,8 +2,8 @@ from random import choice
 
 import pygame
 
-from resources import load_sprite
-from settings import OBSTACLE_SPRITES
+from tlamina.resources import load_sprite
+from tlamina.settings import OBSTACLE_SPRITES
 
 
 class Rock(pygame.sprite.Sprite):

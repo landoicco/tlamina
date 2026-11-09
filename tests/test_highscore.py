@@ -2,10 +2,10 @@ from pathlib import Path
 
 import pytest
 
-import highscore
-from game import GAME_OVER
-from highscore import load_high_score, save_high_score
-from scenes import GameOverScene, SplashScene
+from tlamina import highscore
+from tlamina.game import GAME_OVER
+from tlamina.highscore import load_high_score, save_high_score
+from tlamina.scenes import GameOverScene, SplashScene
 
 
 def test_no_saved_file_means_zero():

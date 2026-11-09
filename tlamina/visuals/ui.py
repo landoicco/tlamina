@@ -1,4 +1,4 @@
-from resources import load_font
+from tlamina.resources import load_font
 
 
 def draw_text(surface, text, size, color='white', **position):

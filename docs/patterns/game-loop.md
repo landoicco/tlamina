@@ -14,7 +14,7 @@ The book compares several ways to handle time. Tlamina uses a **variable time st
 
 ## In Tlamina
 
-`main.py`:
+`tlamina/__main__.py`:
 
 ```python
 while running:
