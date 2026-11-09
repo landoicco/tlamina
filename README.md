@@ -18,11 +18,13 @@ A retro space shooter built with [pygame-ce](https://pyga.me/). Hold off an alie
 
 | Key | Action |
 |---|---|
-| ⬅️ / ➡️ | Move |
-| Space (tap) | Shoot a laser 🔫 |
-| Space (hold, then release) | Charge and fire a piercing arrow 🏹 |
-| Esc | Pause and resume |
-| Enter | Play again after a game over |
+| <kbd>←</kbd> <kbd>→</kbd> | Move |
+| <kbd>Space</kbd> | Shoot a laser 🔫 |
+| Hold <kbd>Space</kbd>, then release | Fire a charged arrow that pierces every enemy in its path 🏹 |
+| <kbd>Esc</kbd> | Pause and resume |
+| <kbd>Enter</kbd> | Play again after a game over |
+
+> 💡 The charged arrow is the key to a high score: line it up under a column, and every enemy it pierces counts toward your combo.
 
 Clear the fleet and a new wave starts, faster and with a new look. From wave 3, the back row is armored and takes two lasers, or one arrow. You have three lives, and each hit cracks your ship a little more.
 
