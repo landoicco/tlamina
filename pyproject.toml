@@ -1,11 +1,32 @@
 [project]
 name = "tlamina"
-version = "0.1.0"
-description = "Tlamina: a retro space shooter made with pygame-ce"
+version = "0.2.0"
+description = "A retro space shooter in Python and pygame-ce: piercing arrows, combos, power-ups, and endless waves."
+readme = "README.md"
+authors = [{ name = "Lando Icaza" }]
+# Covers the code only; the art and audio have their own licenses, see CREDITS.md
+license = "MIT"
+license-files = ["LICENSE"]
+keywords = ["game", "arcade", "shoot-em-up", "retro", "pygame", "pygame-ce", "game-programming-patterns"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: End Users/Desktop",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Topic :: Games/Entertainment :: Arcade",
+]
 requires-python = ">=3.11"
 dependencies = [
     "pygame-ce>=2.5",
 ]
+
+[project.urls]
+Repository = "https://github.com/landoicco/tlamina"
+Releases = "https://github.com/landoicco/tlamina/releases"
+Documentation = "https://github.com/landoicco/tlamina/tree/master/docs"
+Author = "https://licaza.dev"
 
 [dependency-groups]
 dev = [
