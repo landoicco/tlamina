@@ -150,6 +150,8 @@ class GameOverScene(Scene):
 
     def update(self, dt):
         self.time += dt
+        # The game is frozen, but the final explosion plays out
+        self.game.effects.update(dt)
         return self
 
     def draw(self, surface):

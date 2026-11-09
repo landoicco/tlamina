@@ -17,6 +17,8 @@ PLAYER_LASER_COOLDOWN = 0.6
 PLAYER_Y = SCREEN_HEIGHT - 30  # bottom of the ship, leaving room for the engine flame below it
 ENGINE_FLAME_FRAMES = ['fire14', 'fire15']
 ENGINE_FLAME_FRAME_TIME = 0.06
+PLAYER_INVULNERABLE_TIME = 1.5  # after a hit, so one burst of fire can't take several lives
+PLAYER_BLINK_RATE = 10  # blinks per second while invulnerable
 
 # Enemy fleet
 ENEMY_ROW_COLORS = ['black', 'blue', 'green', 'red']  # from the back row to the front
@@ -56,6 +58,28 @@ OBSTACLE_SPRITES = [f'meteor{color}_big{number}' for color in ('Brown', 'Grey') 
 BACKGROUND_DARKEN = 90  # 0 to 255, how much darker than Kenney's tile
 STAR_AMOUNT = 60
 STAR_SPEED = (15, 60)  # random range; faster stars are drawn brighter
+
+# Effects
+EXPLOSION_PARTICLES = 18
+EXPLOSION_SPEED = (60, 220)  # random range, px/s
+EXPLOSION_DRAG = 0.05  # fraction of a particle's speed left after one second
+EXPLOSION_LIFE = (0.3, 0.6)  # random range
+EXPLOSION_COLORS = {
+    'red': (235, 110, 60),
+    'green': (140, 200, 90),
+    'blue': (90, 180, 230),
+    'black': (170, 170, 190),
+    'ufo': (255, 210, 80),
+    'player': (120, 190, 255),
+    'meteorBrown': (150, 110, 80),
+    'meteorGrey': (150, 150, 155),
+}
+SPARK_TIME = 0.12
+FLOATING_TEXT_SIZE = 14
+FLOATING_TEXT_SPEED = 40  # px/s, upwards
+FLOATING_TEXT_TIME = 0.8
+SHAKE_TIME = 0.3
+SHAKE_STRENGTH = 6  # px, fading out over SHAKE_TIME
 
 # HUD
 HUD_FONT_SIZE = 16

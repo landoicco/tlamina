@@ -18,6 +18,7 @@ class Enemy(pygame.sprite.Sprite):
         self.flash_image = load_silhouette(name)
         self.image = self.normal_image
         self.rect = self.image.get_frect(topleft=(x, y))
+        self.color = color
         self.value = ENEMY_POINTS[color]
         self.health = health
         self.flash_left = 0

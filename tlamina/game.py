@@ -20,6 +20,8 @@ from tlamina.settings import (
     ENEMY_X_OFFSET,
     ENEMY_Y_DISTANCE,
     ENEMY_Y_OFFSET,
+    EXPLOSION_COLORS,
+    EXPLOSION_PARTICLES,
     HUD_FONT_SIZE,
     HUD_MARGIN,
     OBSTACLE_AMOUNT,
@@ -35,6 +37,7 @@ from tlamina.settings import (
     WAVE_FIRE_RATE_UP,
     WAVE_SPEED_UP,
 )
+from tlamina.visuals.effects import Effects
 from tlamina.visuals.ui import draw_text
 
 PLAYING = 'playing'
@@ -68,6 +71,10 @@ class Game:
         self.ufo = pygame.sprite.GroupSingle()
         self.ufo_spawn_time = uniform(*UFO_FIRST_SPAWN)
 
+        # Effects are drawn on a layer of their own with the rest of the world, so it can shake under the HUD
+        self.effects = Effects()
+        self.world = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SRCALPHA)
+
         # Audio
         self.explosion_sfx = load_sound('assets/kenney/sci-fi-sounds/explosionCrunch_000.ogg', 0.5)
         self.player_hit_sfx = load_sound('assets/kenney/sci-fi-sounds/explosionCrunch_001.ogg', 0.5)
@@ -85,16 +92,23 @@ class Game:
         self.enemy_position_checker()
         self.enemy_lasers.update(dt)
         self.ufo.update(dt)
+        self.effects.update(dt)
         self.wave_banner_left = max(self.wave_banner_left - dt, 0)
 
     def draw(self, surface):
-        self.player.sprite.lasers.draw(surface)
-        self.player.sprite.draw_engine_flame(surface)
-        self.player.draw(surface)
-        self.enemies.draw(surface)
-        self.enemy_lasers.draw(surface)
-        self.obstacles.draw(surface)
-        self.ufo.draw(surface)
+        world = self.world
+        world.fill((0, 0, 0, 0))
+        self.player.sprite.lasers.draw(world)
+        if self.player.sprite.visible:
+            self.player.sprite.draw_engine_flame(world)
+            self.player.draw(world)
+        self.enemies.draw(world)
+        self.enemy_lasers.draw(world)
+        self.obstacles.draw(world)
+        self.ufo.draw(world)
+        self.effects.draw(world)
+        surface.blit(world, self.effects.shake_offset())
+
         self.draw_hud(surface)
         if self.wave_banner_left:
             draw_text(surface, f'WAVE {self.wave}', 36, center=(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2))
@@ -166,7 +180,8 @@ class Game:
         # Player lasers
         for laser in self.player.sprite.lasers:
             # Obstacle collisions
-            if pygame.sprite.spritecollide(laser, self.obstacles, True):
+            if rocks := pygame.sprite.spritecollide(laser, self.obstacles, True):
+                self.break_rocks(rocks)
                 laser.kill()
 
             # Enemy collisions; armored enemies survive their first hit
@@ -175,35 +190,57 @@ class Game:
                 destroyed = [enemy for enemy in enemies_hit if enemy.hit()]
                 for enemy in destroyed:
                     self.score += enemy.value
+                    self.effects.explosion(enemy.rect.center, EXPLOSION_COLORS[enemy.color])
+                    self.effects.floating_text(enemy.rect.center, f'+{enemy.value}')
                 if destroyed:
                     self.explosion_sfx.play()
+                else:
+                    self.effects.spark(laser.rect.midtop)
                 laser.kill()
 
             # Ufo collisions
-            if pygame.sprite.spritecollide(laser, self.ufo, True):
+            for ufo in pygame.sprite.spritecollide(laser, self.ufo, True):
                 self.score += UFO_POINTS
+                self.effects.explosion(ufo.rect.center, EXPLOSION_COLORS['ufo'], 2 * EXPLOSION_PARTICLES)
+                self.effects.floating_text(ufo.rect.center, f'+{UFO_POINTS}', EXPLOSION_COLORS['ufo'])
                 self.explosion_sfx.play()
                 laser.kill()
 
         # Enemy lasers
+        player = self.player.sprite
         for laser in self.enemy_lasers:
-            # Player collisions
-            if pygame.sprite.spritecollide(laser, self.player, False):
+            # Player collisions; while invulnerable, lasers fly through the ship
+            if not player.invulnerable and pygame.sprite.spritecollide(laser, self.player, False):
                 laser.kill()
-                self.lives -= 1
-                self.player_hit_sfx.play()
-                if self.lives <= 0:
-                    self.state = GAME_OVER
+                self.hit_player()
 
             # Obstacle collisions
-            if pygame.sprite.spritecollide(laser, self.obstacles, True):
+            if rocks := pygame.sprite.spritecollide(laser, self.obstacles, True):
+                self.break_rocks(rocks)
                 laser.kill()
 
         # Enemies
         for enemy in self.enemies:
-            pygame.sprite.spritecollide(enemy, self.obstacles, True)
+            self.break_rocks(pygame.sprite.spritecollide(enemy, self.obstacles, True))
             if pygame.sprite.spritecollide(enemy, self.player, False):
+                self.effects.explosion(player.rect.center, EXPLOSION_COLORS['player'], 2 * EXPLOSION_PARTICLES)
                 self.state = GAME_OVER
+
+    def hit_player(self):
+        player = self.player.sprite
+        self.lives -= 1
+        self.player_hit_sfx.play()
+        self.effects.shake()
+        if self.lives <= 0:
+            self.effects.explosion(player.rect.center, EXPLOSION_COLORS['player'], 2 * EXPLOSION_PARTICLES)
+            self.state = GAME_OVER
+        else:
+            self.effects.explosion(player.rect.center, EXPLOSION_COLORS['player'])
+            player.take_hit(PLAYER_LIVES - self.lives)
+
+    def break_rocks(self, rocks):
+        for rock in rocks:
+            self.effects.explosion(rock.rect.center, EXPLOSION_COLORS[rock.material], EXPLOSION_PARTICLES // 2)
 
     def draw_hud(self, surface):
         draw_text(surface, f'Score {self.score}', HUD_FONT_SIZE, topleft=(HUD_MARGIN, HUD_MARGIN))

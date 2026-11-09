@@ -13,6 +13,7 @@ from tlamina.settings import (
     ENEMY_LASER_SPEED,
     ENEMY_MODELS,
     ENEMY_ROW_COLORS,
+    PLAYER_INVULNERABLE_TIME,
     PLAYER_LASER_COOLDOWN,
     PLAYER_LASER_SPEED,
     PLAYER_LIVES,
@@ -99,6 +100,80 @@ def test_an_enemy_reaching_the_player_ends_the_game(game):
     game.collision_checks()
 
     assert game.state == GAME_OVER
+
+
+def test_a_hit_makes_the_player_briefly_invulnerable(game):
+    player = game.player.sprite
+    enemy_laser_at(game, player.rect.center)
+    game.collision_checks()
+
+    second = enemy_laser_at(game, player.rect.center)
+    game.collision_checks()
+
+    assert game.lives == PLAYER_LIVES - 1
+    assert second.alive()
+
+    player.update(PLAYER_INVULNERABLE_TIME)
+    game.collision_checks()
+
+    assert game.lives == PLAYER_LIVES - 2
+
+
+def test_the_player_blinks_while_invulnerable(game):
+    player = game.player.sprite
+    assert player.visible
+
+    player.take_hit(1)
+    seen = set()
+    for _ in range(round(PLAYER_INVULNERABLE_TIME * 60)):
+        player.update(1 / 60)
+        seen.add(player.visible)
+
+    assert seen == {True, False}
+    assert player.visible
+
+
+def test_hits_crack_the_ship(game):
+    player = game.player.sprite
+    clean = pygame.image.tobytes(player.image, 'RGBA')
+
+    player.take_hit(1)
+    cracked = pygame.image.tobytes(player.image, 'RGBA')
+
+    assert cracked != clean
+    # The shared, cached ship sprite stays clean
+    assert pygame.image.tobytes(load_sprite('playerShip1_blue'), 'RGBA') == clean
+
+
+# Effects
+
+
+def test_destroying_an_enemy_explodes_and_shows_its_points(game):
+    enemy = game.enemies.sprites()[0]
+    player_laser_at(game, enemy.rect.center)
+
+    game.collision_checks()
+
+    kinds = {type(item).__name__ for item in game.effects.items}
+    assert kinds == {'Particle', 'FloatingText'}
+
+
+def test_hitting_an_armored_enemy_sparks(game):
+    enemy = game.enemies.sprites()[0]
+    enemy.health = 2
+    player_laser_at(game, enemy.rect.center)
+
+    game.collision_checks()
+
+    assert [type(item).__name__ for item in game.effects.items] == ['Spark']
+
+
+def test_getting_hit_shakes_the_screen(game):
+    enemy_laser_at(game, game.player.sprite.rect.center)
+
+    game.collision_checks()
+
+    assert game.effects.shake_left > 0
 
 
 # Enemy fleet
