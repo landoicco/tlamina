@@ -6,6 +6,7 @@ from tlamina.entities.enemy import Enemy, Ufo
 from tlamina.entities.laser import Laser
 from tlamina.entities.obstacle import Rock
 from tlamina.entities.player import Player
+from tlamina.entities.powerup import PowerUp
 from tlamina.resources import load_sound, load_sprite
 from tlamina.settings import (
     ARMORED_FROM_WAVE,
@@ -31,6 +32,10 @@ from tlamina.settings import (
     OBSTACLE_Y,
     PLAYER_LIVES,
     PLAYER_Y,
+    POWERUP_COLORS,
+    POWERUP_NAMES,
+    POWERUP_SPRITES,
+    POWERUP_TIME,
     SCREEN_HEIGHT,
     SCREEN_WIDTH,
     UFO_FIRST_SPAWN,
@@ -73,6 +78,7 @@ class Game:
 
         # Bonus ufo setup
         self.ufo = pygame.sprite.GroupSingle()
+        self.powerups = pygame.sprite.Group()
         self.ufo_spawn_time = uniform(*UFO_FIRST_SPAWN)
 
         # Effects are drawn on a layer of their own with the rest of the world, so it can shake under the HUD
@@ -84,6 +90,9 @@ class Game:
         self.player_hit_sfx = load_sound('assets/kenney/sci-fi-sounds/explosionCrunch_001.ogg', 0.5)
         self.laser_sfx = load_sound('assets/kenney/space-shooter-redux/sfx_laser1.ogg', 0.3)
         self.combo_sfx = load_sound('assets/kenney/space-shooter-redux/sfx_twoTone.ogg', 0.4)
+        self.powerup_sfx = load_sound('assets/kenney/space-shooter-redux/sfx_zap.ogg', 0.5)
+        self.shield_up_sfx = load_sound('assets/kenney/space-shooter-redux/sfx_shieldUp.ogg', 0.5)
+        self.shield_down_sfx = load_sound('assets/kenney/space-shooter-redux/sfx_shieldDown.ogg', 0.5)
 
     def update(self, dt):
         lasers_before = set(self.player.sprite.lasers)
@@ -98,6 +107,7 @@ class Game:
         self.enemy_position_checker()
         self.enemy_lasers.update(dt)
         self.ufo.update(dt)
+        self.powerups.update(dt)
         self.effects.update(dt)
         self.wave_banner_left = max(self.wave_banner_left - dt, 0)
         # Lasers can leave the screen or hit something at any point of the frame
@@ -110,11 +120,13 @@ class Game:
         if self.player.sprite.visible:
             self.player.sprite.draw_engine_flame(world)
             self.player.draw(world)
+            self.player.sprite.draw_shield(world)
             self.player.sprite.draw_charge_glow(world)
         self.enemies.draw(world)
         self.enemy_lasers.draw(world)
         self.obstacles.draw(world)
         self.ufo.draw(world)
+        self.powerups.draw(world)
         self.effects.draw(world)
         surface.blit(world, self.effects.shake_offset())
 
@@ -221,8 +233,13 @@ class Game:
                 self.effects.explosion(ufo.rect.center, EXPLOSION_COLORS['ufo'], 2 * EXPLOSION_PARTICLES)
                 self.effects.floating_text(ufo.rect.center, f'+{points}', EXPLOSION_COLORS['ufo'])
                 self.explosion_sfx.play()
+                self.powerups.add(PowerUp(ufo.rect.center, choice(list(POWERUP_SPRITES))))
                 if not laser.pierce:
                     laser.kill()
+
+        # Power-ups
+        for powerup in pygame.sprite.spritecollide(self.player.sprite, self.powerups, True):
+            self.pick_up(powerup.kind)
 
         # Enemy lasers
         player = self.player.sprite
@@ -246,6 +263,12 @@ class Game:
 
     def hit_player(self):
         player = self.player.sprite
+        if player.has('shield'):
+            # The shield takes the hit instead: no life lost, and the combo survives
+            player.break_shield()
+            self.shield_down_sfx.play()
+            self.effects.explosion(player.rect.midtop, POWERUP_COLORS['shield'], EXPLOSION_PARTICLES // 2)
+            return
         self.lives -= 1
         self.combo_hits = 0
         self.player_hit_sfx.play()
@@ -256,6 +279,12 @@ class Game:
         else:
             self.effects.explosion(player.rect.center, EXPLOSION_COLORS['player'])
             player.take_hit(PLAYER_LIVES - self.lives)
+
+    def pick_up(self, kind):
+        self.player.sprite.apply_powerup(kind)
+        (self.shield_up_sfx if kind == 'shield' else self.powerup_sfx).play()
+        player = self.player.sprite
+        self.effects.floating_text((player.rect.centerx, player.rect.top - 20), POWERUP_NAMES[kind], POWERUP_COLORS[kind])
 
     def break_rocks(self, rocks):
         for rock in rocks:
@@ -286,3 +315,13 @@ class Game:
         icon_width = self.life_icon.get_width() + 6
         for life in range(self.lives):
             surface.blit(self.life_icon, self.life_icon.get_rect(topright=(SCREEN_WIDTH - HUD_MARGIN - life * icon_width, HUD_MARGIN)))
+        self.draw_powerup_timers(surface, score_rect.bottom + 10)
+
+    def draw_powerup_timers(self, surface, top):
+        # An icon and a shrinking bar for each active power-up, under the score
+        for kind, time_left in self.player.sprite.powerups.items():
+            icon = load_sprite(POWERUP_SPRITES[kind], 0.5)
+            icon_rect = surface.blit(icon, (HUD_MARGIN, top))
+            bar = pygame.Rect(icon_rect.right + 6, icon_rect.centery - 2, 50 * time_left / POWERUP_TIME, 4)
+            surface.fill(POWERUP_COLORS[kind], bar)
+            top = icon_rect.bottom + 6

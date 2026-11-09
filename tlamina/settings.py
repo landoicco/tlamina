@@ -51,6 +51,17 @@ COMBO_STEP = 5  # hits in a row to raise the multiplier by one
 COMBO_MAX = 4
 COMBO_COLOR = 'gold'
 
+# Power-ups, dropped by the bonus ufo
+POWERUP_SPRITES = {'volley': 'powerupBlue_star', 'rapid_fire': 'powerupYellow_bolt', 'shield': 'powerupGreen_shield'}
+POWERUP_NAMES = {'volley': 'Volley', 'rapid_fire': 'Rapid fire', 'shield': 'Shield'}
+POWERUP_COLORS = {'volley': (90, 180, 230), 'rapid_fire': (255, 210, 80), 'shield': (140, 200, 90)}
+POWERUP_FALL_SPEED = 150
+POWERUP_SCALE = 0.8  # a bit bigger than the other sprites, so the capsule is easy to spot
+POWERUP_TIME = 8
+POWERUP_WARNING_TIME = 2  # the shield blinks for this long before it runs out
+VOLLEY_ANGLE = 12  # degrees between the lasers of the fan
+RAPID_FIRE_COOLDOWN = 0.2
+
 # Bonus ufo
 UFO_SPRITES = ['ufoRed', 'ufoGreen', 'ufoYellow', 'ufoBlue']
 UFO_SPEED = 180

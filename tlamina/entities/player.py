@@ -2,7 +2,7 @@ from math import sin
 
 import pygame
 
-from tlamina.entities.laser import Arrow, Laser
+from tlamina.entities.laser import Arrow, Laser, Shot
 from tlamina.resources import load_sound, load_sprite
 from tlamina.settings import (
     ARROW_CHARGE_TIME,
@@ -14,7 +14,11 @@ from tlamina.settings import (
     PLAYER_LASER_COOLDOWN,
     PLAYER_LASER_SPEED,
     PLAYER_SPEED,
+    POWERUP_TIME,
+    POWERUP_WARNING_TIME,
+    RAPID_FIRE_COOLDOWN,
     SCREEN_WIDTH,
+    VOLLEY_ANGLE,
 )
 
 
@@ -25,6 +29,8 @@ class Player(pygame.sprite.Sprite):
         self.image = self.ship_image
         self.rect = self.image.get_frect(midbottom=pos)
         self.invulnerable_left = 0
+        self.powerups = {}  # kind -> seconds left
+        self.shield_image = load_sprite('shield1')
         self.speed = PLAYER_SPEED
         self.cooldown_left = 0
         self.space_held = False
@@ -63,9 +69,21 @@ class Player(pygame.sprite.Sprite):
     def shoot_laser(self):
         if self.cooldown_left > 0:
             return
-        self.lasers.add(Laser(self.rect.center, PLAYER_LASER_SPEED))
-        self.cooldown_left = PLAYER_LASER_COOLDOWN
+        angles = (-VOLLEY_ANGLE, 0, VOLLEY_ANGLE) if self.has('volley') else (0,)
+        shot = Shot(len(angles))
+        self.lasers.add(Laser(self.rect.center, PLAYER_LASER_SPEED, angle=angle, shot=shot) for angle in angles)
+        self.cooldown_left = RAPID_FIRE_COOLDOWN if self.has('rapid_fire') else PLAYER_LASER_COOLDOWN
         self.laser_sfx.play()
+
+    def has(self, powerup):
+        return self.powerups.get(powerup, 0) > 0
+
+    def apply_powerup(self, kind):
+        # Catching one that's already active restarts its timer
+        self.powerups[kind] = POWERUP_TIME
+
+    def break_shield(self):
+        self.powerups.pop('shield', None)
 
     def shoot_arrow(self):
         self.lasers.add(Arrow(self.rect.midtop))
@@ -97,6 +115,12 @@ class Player(pygame.sprite.Sprite):
         self.image = self.ship_image.copy()
         self.image.blit(cracks, cracks.get_rect(center=self.image.get_rect().center))
 
+    def draw_shield(self, surface):
+        time_left = self.powerups.get('shield', 0)
+        # Blinks when about to run out
+        if time_left > POWERUP_WARNING_TIME or (time_left > 0 and int(time_left * 6) % 2 == 0):
+            surface.blit(self.shield_image, self.shield_image.get_rect(center=self.rect.center))
+
     def draw_engine_flame(self, surface):
         frame = self.flame_frames[int(self.flame_time / ENGINE_FLAME_FRAME_TIME) % len(self.flame_frames)]
         # Tucked a few pixels under the hull, so it looks attached to the engine
@@ -119,6 +143,7 @@ class Player(pygame.sprite.Sprite):
     def update(self, dt):
         self.flame_time += dt
         self.invulnerable_left = max(self.invulnerable_left - dt, 0)
+        self.powerups = {kind: left - dt for kind, left in self.powerups.items() if left - dt > 0}
         self.recharge(dt)
         self.get_input(dt)
         self.constraint()

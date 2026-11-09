@@ -8,8 +8,9 @@ import pytest
 from tlamina import resources
 from tlamina.entities.enemy import Enemy, Ufo
 from tlamina.entities.laser import Laser
+from tlamina.entities.powerup import PowerUp
 from tlamina.game import Game
-from tlamina.settings import ENEMY_MODELS, ENEMY_ROW_COLORS, OBSTACLE_SPRITES, UFO_SPRITES
+from tlamina.settings import ENEMY_MODELS, ENEMY_ROW_COLORS, OBSTACLE_SPRITES, POWERUP_SPRITES, UFO_SPRITES
 
 ROOT = Path(__file__).resolve().parent.parent
 
@@ -41,7 +42,8 @@ def test_every_sprite_the_game_uses_is_in_the_atlas(monkeypatch, keys):
         return load_sprite(name, *args)
 
     # Patch the name each sprite module imported, then create every kind of sprite
-    for module in ('entities.enemy', 'game', 'entities.laser', 'entities.obstacle', 'entities.player'):
+    modules = ('entities.enemy', 'game', 'entities.laser', 'entities.obstacle', 'entities.player', 'entities.powerup')
+    for module in modules:
         monkeypatch.setattr(f'tlamina.{module}.load_sprite', recording_load_sprite)
     Game()
     for color in ENEMY_ROW_COLORS:
@@ -50,6 +52,8 @@ def test_every_sprite_the_game_uses_is_in_the_atlas(monkeypatch, keys):
     Ufo('left')
     Laser((0, 0), 1)
     Laser((0, 0), 1, 'laserRed16')
+    for kind in POWERUP_SPRITES:
+        PowerUp((0, 0), kind)
 
     assert requested
     assert requested <= manifest_names()
