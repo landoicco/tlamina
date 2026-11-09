@@ -45,6 +45,7 @@ WAVE_SPEED_UP = 1.10  # fleet speed multiplier per wave
 WAVE_FIRE_RATE_UP = 1.08  # fleet shots per second multiplier per wave
 ARMORED_FROM_WAVE = 3  # from this wave on, the back row takes two hits
 WAVE_BANNER_TIME = 1.5
+FIRST_WAVE_BANNER_TIME = 3  # longer, to leave time to read the controls hint under it
 
 # Combo
 COMBO_STEP = 5  # hits in a row to raise the multiplier by one

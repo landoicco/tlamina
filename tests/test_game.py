@@ -16,12 +16,14 @@ from tlamina.settings import (
     ENEMY_LASER_SPEED,
     ENEMY_MODELS,
     ENEMY_ROW_COLORS,
+    FIRST_WAVE_BANNER_TIME,
     PLAYER_INVULNERABLE_TIME,
     PLAYER_LASER_COOLDOWN,
     PLAYER_LASER_SPEED,
     PLAYER_LIVES,
     SCREEN_WIDTH,
     UFO_POINTS,
+    WAVE_BANNER_TIME,
 )
 
 
@@ -589,3 +591,11 @@ def test_lasers_leaving_through_a_side_are_removed(game):
     game.player.sprite.lasers.update(1 / 10)
 
     assert not laser.alive()
+
+
+def test_the_first_wave_banner_stays_longer_for_the_controls_hint(game):
+    assert game.wave_banner_left == FIRST_WAVE_BANNER_TIME
+
+    clear_wave(game)
+
+    assert game.wave_banner_left == WAVE_BANNER_TIME

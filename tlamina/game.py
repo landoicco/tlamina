@@ -26,6 +26,7 @@ from tlamina.settings import (
     ENEMY_Y_OFFSET,
     EXPLOSION_COLORS,
     EXPLOSION_PARTICLES,
+    FIRST_WAVE_BANNER_TIME,
     HUD_FONT_SIZE,
     HUD_MARGIN,
     OBSTACLE_AMOUNT,
@@ -133,6 +134,10 @@ class Game:
         self.draw_hud(surface)
         if self.wave_banner_left:
             draw_text(surface, f'WAVE {self.wave}', 36, center=(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2))
+            if self.wave == 1:
+                # Moving is obvious; the charged arrow is the one control nobody would guess
+                hint = 'Tap Space to shoot, hold to charge an arrow'
+                draw_text(surface, hint, 13, 'gray70', center=(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 + 40))
 
     def create_multiple_obstacles(self, x_start, y_start, *offset):
         for offset_x in offset:
@@ -147,7 +152,7 @@ class Game:
         self.enemy_laser_interval = ENEMY_LASER_INTERVAL / WAVE_FIRE_RATE_UP**level
         self.enemy_shoot_time = self.enemy_laser_interval
         self.enemies_setup(model=level % ENEMY_MODELS + 1, armored=self.wave >= ARMORED_FROM_WAVE)
-        self.wave_banner_left = WAVE_BANNER_TIME
+        self.wave_banner_left = FIRST_WAVE_BANNER_TIME if self.wave == 1 else WAVE_BANNER_TIME
 
     def enemies_setup(self, model, armored):
         for row_index, color in enumerate(ENEMY_ROW_COLORS):
