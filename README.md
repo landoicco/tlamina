@@ -98,7 +98,7 @@ The unit tests cover the game logic without opening a window: scoring and the co
 
 ### 📚 Design docs
 
-How the game is structured and why, based on Robert Nystrom's *Game Programming Patterns*: see [`docs/`](docs/README.md). What the game is trying to be, and what it leaves out, is in the [game design document](docs/game-design.md).
+How the game is built and why, including the patterns from Robert Nystrom's *Game Programming Patterns* it uses: see the [architecture overview](docs/architecture.md). What the game is trying to be, and what it leaves out, is in the [game design document](docs/game-design.md).
 
 ### 📁 Project layout
 
@@ -166,7 +166,7 @@ Each phase is one pull request into `master`.
 - [x] Visual feedback: explosions, floating points, ship damage cracks, screen shake, drifting star background
 - [x] Code moved into a `tlamina` package
 - [x] Tests for every mechanic, and design docs for the new pattern
-- ~~Waves defined as data (*Type Object* pattern)~~: a formula turned out simpler, see [design docs](docs/README.md#considered-and-left-out)
+- ~~Waves defined as data (*Type Object* pattern)~~: a formula turned out simpler, see [architecture](docs/architecture.md#considered-and-left-out)
 - ~~Obstacles that shrink as they get damaged~~: left out to keep the scope small
 
 ### 📝 7. Documentation: `docs/portfolio`
@@ -183,7 +183,7 @@ Tlamina started in December 2021 as my take on [Clear Code](https://www.youtube.
 | **Screens** | The window closes on game over | Splash, pause, and game over screens, and a saved high score |
 | **Art and audio** | The tutorial's own files | Kenney's CC0 packs, packed into a sprite atlas by a script; CRT effect drawn in code |
 | **Feel** | Sprites disappear on hit | Explosions, floating points, damage cracks, screen shake |
-| **Code** | A few modules with global state, frame-based movement | A `tlamina` package organized by role, delta-time movement, design patterns documented in [`docs/`](docs/README.md) |
+| **Code** | A few modules with global state, frame-based movement | A `tlamina` package organized by role, delta-time movement, design patterns documented in [`docs/`](docs/architecture.md) |
 | **Quality** | No tests | 105 tests, strict linting, CI on every pull request |
 | **Distribution** | Run from source | Linux and Windows executables built and released automatically |
 
