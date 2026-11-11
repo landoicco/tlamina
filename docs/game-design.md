@@ -64,7 +64,7 @@ Three lives. Each hit cracks the ship a bit more and makes it invulnerable for 1
 | ⚫ Back row | 40 |
 | 🛸 Bonus UFO | 100 |
 
-Points are multiplied by the current combo. The high score is saved in the user's data folder (`~/.local/share/tlamina/` on Linux, `%APPDATA%\tlamina\` on Windows).
+Points are multiplied by the current combo. The high score is saved in the user's data folder (`~/.local/share/tlamina/` on Linux, `%APPDATA%\tlamina\` on Windows, `~/Library/Application Support/tlamina/` on macOS).
 
 ## 🎨 Look and feel
 

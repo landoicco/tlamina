@@ -12,6 +12,8 @@ def data_dir():
         return Path(os.environ['TLAMINA_DATA_DIR'])
     if sys.platform == 'win32':
         return Path(os.environ.get('APPDATA', Path.home())) / 'tlamina'
+    if sys.platform == 'darwin':
+        return Path.home() / 'Library' / 'Application Support' / 'tlamina'
     return Path(os.environ.get('XDG_DATA_HOME', Path.home() / '.local' / 'share')) / 'tlamina'
 
 
