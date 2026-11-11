@@ -16,7 +16,7 @@ All the code lives in the `tlamina` package, grouped by the role each module pla
 | `highscore.py` | Loads and saves the high score in the user's data folder |
 | `resources.py` | Resolves asset paths, cuts sprites out of the atlas by name, and caches images, sounds, and fonts |
 | `settings.py` | Gameplay tuning values. Speeds are in pixels per second and times in seconds |
-| `entities/` | Sprites that move and collide: `player`, `enemy` (the fleet and the bonus ufo), `laser` (lasers and the arrow), `obstacle`, `powerup` |
+| `entities/` | Sprites that move and collide: `player`, `enemy` (the fleet and the bonus UFO), `laser` (lasers and the arrow), `obstacle`, `powerup` |
 | `visuals/` | Things that are only drawn and never affect the game: `background`, `effects` (explosions, floating text, screen shake), the `crt` overlay, and `ui` text |
 
 Dependencies point one way: `__main__` → `scenes` → `game` → `entities` / `visuals` → `resources` / `settings`. Entities never import `game`, so each one can be created and tested on its own.
@@ -26,10 +26,10 @@ Dependencies point one way: `__main__` → `scenes` → `game` → `entities` / 
 While playing, `game.update(dt)` runs in a fixed order:
 
 1. Player input, movement, shooting cooldown, arrow charge, and power-up timers; the player's lasers move
-2. Timers: bonus ufo spawn and fleet shots
-3. Collisions: player lasers against meteors, enemies, and the ufo; power-up pickups; enemy lasers against the player and meteors; the fleet against meteors and the player
+2. Timers: bonus UFO spawn and fleet shots
+3. Collisions: player lasers against meteors, enemies, and the UFO; power-up pickups; enemy lasers against the player and meteors; the fleet against meteors and the player
 4. A new wave if the fleet was cleared
-5. Fleet movement and edge bounces; enemy lasers, the ufo, power-ups, and effects move
+5. Fleet movement and edge bounces; enemy lasers, the UFO, power-ups, and effects move
 6. The combo checks which shots left the screen without hitting anything
 
 Then everything is drawn. `Game.draw` puts the world (sprites and effects) on a transparent layer of its own and blits it with the screen shake offset, then draws the HUD straight onto the screen, so the world can shake while the score, lives, and power-up timers stay still.
@@ -66,10 +66,10 @@ while running:
 
 [Book chapter](https://gameprogrammingpatterns.com/update-method.html) · `update(dt)` on every sprite, `Effects`, and `Game`
 
-The world holds many independent objects: the player, 24 enemies, the ufo, power-ups, lasers, and explosion particles. Each one moves itself in `update(dt)`, and pygame's `Group.update()` calls it on every member, so `Game` doesn't need to know how any of them move. The player reads input and counts down its timers, enemies move and fade their hit flash, lasers fly straight or at an angle, and each of them removes itself when it leaves the screen.
+The world holds many independent objects: the player, 24 enemies, the UFO, power-ups, lasers, and explosion particles. Each one moves itself in `update(dt)`, and pygame's `Group.update()` calls it on every member, so `Game` doesn't need to know how any of them move. The player reads input and counts down its timers, enemies move and fade their hit flash, lasers fly straight or at an angle, and each of them removes itself when it leaves the screen.
 
 - `Game.update(dt)` is the update method of the whole run. It handles what involves more than one object: collisions, the combo, and the fleet, which has to reverse as a unit when any enemy touches an edge.
-- Update order matters. Player lasers move before collisions are checked, while enemies, enemy lasers, and the ufo move after, so their hits are detected one frame later. The order is the same every frame, so the delay is consistent.
+- Update order matters. Player lasers move before collisions are checked, while enemies, enemy lasers, and the UFO move after, so their hits are detected one frame later. The order is the same every frame, so the delay is consistent.
 - One level up, a scene decides whether the game advances at all: the pause screen simply doesn't call `game.update`.
 
 ### 🪶 Flyweight

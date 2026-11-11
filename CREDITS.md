@@ -14,21 +14,23 @@ The sprites in use are listed by their original names in [`tools/atlas.toml`](to
 
 The background tile, `assets/kenney/space-shooter-redux/darkPurple.png`, comes unmodified from the same pack's `Backgrounds/` folder.
 
-The game icon, `assets/icon.ico`, is the pack's `playerShip1_blue` centered on a transparent square and resized to 16, 32, 48, and 256 px. The window uses the same image, built from the atlas at startup.
+The game icon, `assets/icon.ico`, is the pack's `playerShip1_blue` centered on a transparent square and resized to 16, 32, 48, and 256 px; `assets/icon.icns`, for macOS, is converted from it. The window uses the same image, built from the atlas at startup.
 
 ## 🔊 Sound effects
 
-| File | Used for | Pack | Author | License | Source |
-|---|---|---|---|---|---|
-| `assets/kenney/space-shooter-redux/sfx_laser1.ogg` | Lasers | Space Shooter Redux | [Kenney](https://www.kenney.nl) | CC0 ([license](assets/kenney/space-shooter-redux/license.txt)) | [OpenGameArt](https://opengameart.org/content/space-shooter-redux) |
-| `assets/kenney/space-shooter-redux/sfx_laser2.ogg` | Charged arrow | Space Shooter Redux | [Kenney](https://www.kenney.nl) | CC0 ([license](assets/kenney/space-shooter-redux/license.txt)) | [OpenGameArt](https://opengameart.org/content/space-shooter-redux) |
-| `assets/kenney/space-shooter-redux/sfx_twoTone.ogg` | Combo multiplier going up | Space Shooter Redux | [Kenney](https://www.kenney.nl) | CC0 ([license](assets/kenney/space-shooter-redux/license.txt)) | [OpenGameArt](https://opengameart.org/content/space-shooter-redux) |
-| `assets/kenney/space-shooter-redux/sfx_zap.ogg` | Picking up a power-up | Space Shooter Redux | [Kenney](https://www.kenney.nl) | CC0 ([license](assets/kenney/space-shooter-redux/license.txt)) | [OpenGameArt](https://opengameart.org/content/space-shooter-redux) |
-| `assets/kenney/space-shooter-redux/sfx_shieldUp.ogg` | Picking up the shield | Space Shooter Redux | [Kenney](https://www.kenney.nl) | CC0 ([license](assets/kenney/space-shooter-redux/license.txt)) | [OpenGameArt](https://opengameart.org/content/space-shooter-redux) |
-| `assets/kenney/space-shooter-redux/sfx_shieldDown.ogg` | The shield breaking | Space Shooter Redux | [Kenney](https://www.kenney.nl) | CC0 ([license](assets/kenney/space-shooter-redux/license.txt)) | [OpenGameArt](https://opengameart.org/content/space-shooter-redux) |
-| `assets/kenney/space-shooter-redux/sfx_lose.ogg` | Game over | Space Shooter Redux | [Kenney](https://www.kenney.nl) | CC0 ([license](assets/kenney/space-shooter-redux/license.txt)) | [OpenGameArt](https://opengameart.org/content/space-shooter-redux) |
-| `assets/kenney/sci-fi-sounds/explosionCrunch_000.ogg` | Enemy destroyed | Sci-Fi Sounds | [Kenney](https://www.kenney.nl) | CC0 ([license](assets/kenney/sci-fi-sounds/license.txt)) | [kenney.nl](https://kenney.nl/assets/sci-fi-sounds), [OpenGameArt](https://opengameart.org/content/sci-fi-sounds) |
-| `assets/kenney/sci-fi-sounds/explosionCrunch_001.ogg` | Player hit | Sci-Fi Sounds | [Kenney](https://www.kenney.nl) | CC0 ([license](assets/kenney/sci-fi-sounds/license.txt)) | [kenney.nl](https://kenney.nl/assets/sci-fi-sounds), [OpenGameArt](https://opengameart.org/content/sci-fi-sounds) |
+All by [Kenney](https://www.kenney.nl), from two CC0 packs: Space Shooter Redux, the same as the sprites, and Sci-Fi Sounds ([license](assets/kenney/sci-fi-sounds/license.txt); [kenney.nl](https://kenney.nl/assets/sci-fi-sounds), [OpenGameArt](https://opengameart.org/content/sci-fi-sounds)).
+
+| File in `assets/kenney/` | Used for |
+|---|---|
+| `space-shooter-redux/sfx_laser1.ogg` | Lasers |
+| `space-shooter-redux/sfx_laser2.ogg` | Charged arrow |
+| `space-shooter-redux/sfx_twoTone.ogg` | Combo multiplier going up |
+| `space-shooter-redux/sfx_zap.ogg` | Picking up a power-up |
+| `space-shooter-redux/sfx_shieldUp.ogg` | Picking up the shield |
+| `space-shooter-redux/sfx_shieldDown.ogg` | The shield breaking |
+| `space-shooter-redux/sfx_lose.ogg` | Game over |
+| `sci-fi-sounds/explosionCrunch_000.ogg` | Enemy destroyed |
+| `sci-fi-sounds/explosionCrunch_001.ogg` | Player hit |
 
 ## 🎵 Music
 
@@ -47,4 +49,4 @@ The screen border and scanlines are drawn in code by [`tlamina/visuals/crt.py`](
 
 ## 💻 Code
 
-Tlamina started in 2021 as my version of [Clear Code](https://www.youtube.com/@ClearCode)'s pygame Space Invaders tutorial ([repository](https://github.com/clear-code-projects/Space-invaders)). No art or audio from the tutorial is used, and the code has since been rewritten and extended; the [README](README.md#-from-tutorial-to-finished-game) shows how it changed. The 2026 work was done with [Claude Code](https://claude.com/claude-code) as a pair programmer.
+Tlamina started as my version of [Clear Code](https://www.youtube.com/@ClearCode)'s pygame Space Invaders tutorial ([repository](https://github.com/clear-code-projects/Space-invaders)). No art or audio from the tutorial is used; the [README](README.md#-from-tutorial-to-finished-game) shows how the code grew from there.

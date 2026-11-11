@@ -42,6 +42,7 @@ def test_saving_where_it_cannot_write_does_not_crash(data_dir):
         ('linux', {'XDG_DATA_HOME': '/xdg'}, Path('/xdg/tlamina')),
         ('linux', {}, Path.home() / '.local' / 'share' / 'tlamina'),
         ('win32', {'APPDATA': 'C:/Users/me/AppData/Roaming'}, Path('C:/Users/me/AppData/Roaming/tlamina')),
+        ('darwin', {}, Path.home() / 'Library' / 'Application Support' / 'tlamina'),
     ],
 )
 def test_data_dir_follows_the_platform(monkeypatch, platform, env, expected):
