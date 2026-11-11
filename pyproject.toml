@@ -1,6 +1,6 @@
 [project]
 name = "tlamina"
-version = "0.2.0"
+version = "0.3.0"
 description = "A retro space shooter in Python and pygame-ce: piercing arrows, combos, power-ups, and endless waves."
 readme = "README.md"
 authors = [{ name = "Lando Icaza" }]
