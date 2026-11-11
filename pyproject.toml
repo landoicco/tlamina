@@ -11,6 +11,7 @@ keywords = ["game", "arcade", "shoot-em-up", "retro", "pygame", "pygame-ce", "ga
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Intended Audience :: End Users/Desktop",
+    "Operating System :: MacOS",
     "Operating System :: Microsoft :: Windows",
     "Operating System :: POSIX :: Linux",
     "Programming Language :: Python :: 3",

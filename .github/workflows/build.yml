@@ -17,6 +17,10 @@ jobs:
           - os: windows-latest
             package: tlamina-windows
             executable: Tlamina.exe
+          # Apple Silicon only; Intel Macs aren't built for
+          - os: macos-latest
+            package: tlamina-macos
+            executable: Tlamina.app/Contents/MacOS/Tlamina
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
@@ -40,8 +44,14 @@ jobs:
           cd "$RUNNER_TEMP"
           "$EXECUTABLE"
 
+      # Artifacts lose symlinks and permissions, which the app bundle needs,
+      # so it's zipped here and uploaded as the zip
+      - name: Zip the macOS app
+        if: runner.os == 'macOS'
+        run: ditto -c -k --keepParent dist/${{ matrix.package }} dist/${{ matrix.package }}.zip
+
       - uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.package }}
-          path: dist/${{ matrix.package }}/
+          path: ${{ runner.os == 'macOS' && format('dist/{0}.zip', matrix.package) || format('dist/{0}/', matrix.package) }}
           retention-days: 14

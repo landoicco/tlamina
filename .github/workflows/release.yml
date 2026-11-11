@@ -38,6 +38,8 @@ jobs:
           chmod +x tlamina-linux/Tlamina
           tar -czf tlamina-linux.tar.gz tlamina-linux
           zip -r tlamina-windows.zip tlamina-windows
+          # Zipped on the macOS runner already, to keep the app bundle intact
+          mv tlamina-macos/tlamina-macos.zip .
       - name: Create GitHub Release
         env:
           GH_TOKEN: ${{ github.token }}
@@ -45,5 +47,6 @@ jobs:
           gh release create "$GITHUB_REF_NAME" \
             packages/tlamina-linux.tar.gz \
             packages/tlamina-windows.zip \
+            packages/tlamina-macos.zip \
             --title "Tlamina $GITHUB_REF_NAME" \
             --generate-notes

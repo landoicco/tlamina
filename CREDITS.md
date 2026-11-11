@@ -14,7 +14,7 @@ The sprites in use are listed by their original names in [`tools/atlas.toml`](to
 
 The background tile, `assets/kenney/space-shooter-redux/darkPurple.png`, comes unmodified from the same pack's `Backgrounds/` folder.
 
-The game icon, `assets/icon.ico`, is the pack's `playerShip1_blue` centered on a transparent square and resized to 16, 32, 48, and 256 px. The window uses the same image, built from the atlas at startup.
+The game icon, `assets/icon.ico`, is the pack's `playerShip1_blue` centered on a transparent square and resized to 16, 32, 48, and 256 px; `assets/icon.icns`, for macOS, is converted from it. The window uses the same image, built from the atlas at startup.
 
 ## 🔊 Sound effects
 

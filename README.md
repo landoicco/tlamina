@@ -6,7 +6,7 @@
 [![Release](https://img.shields.io/github/v/release/landoicco/tlamina)](https://github.com/landoicco/tlamina/releases/latest)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 ![Python](https://img.shields.io/badge/python-3.11%2B-3776AB?logo=python&logoColor=white)
-![Platforms](https://img.shields.io/badge/platforms-Linux%20%7C%20Windows-lightgrey)
+![Platforms](https://img.shields.io/badge/platforms-Linux%20%7C%20Windows%20%7C%20macOS-lightgrey)
 
 A retro space shooter built with [pygame-ce](https://pyga.me/). Hold off an alien fleet that comes back faster every wave: take cover behind the meteors, charge arrows that pierce whole columns, chain hits into a score multiplier, and grab the power-ups the bonus UFO drops. 👾
 
@@ -26,10 +26,15 @@ Every 5 hits in a row raise the combo multiplier, up to ×4, so line the arrow u
 
 ## 📥 Download
 
-Get the latest build from the [releases page](https://github.com/landoicco/tlamina/releases/latest). Each package is a single executable, no installation needed.
+Get the latest build from the [releases page](https://github.com/landoicco/tlamina/releases/latest). No installation needed.
 
-- 🪟 **Windows**: unzip `tlamina-windows.zip` and run `Tlamina.exe`. The executable isn't signed, so SmartScreen may warn about it the first time: choose *More info* → *Run anyway*.
 - 🐧 **Linux**: extract `tlamina-linux.tar.gz` and run `./Tlamina`. Needs glibc 2.35 or newer (Ubuntu 22.04 and later).
+- 🪟 **Windows**: unzip `tlamina-windows.zip` and run `Tlamina.exe`.
+- 🍎 **macOS**: unzip `tlamina-macos.zip` and open `Tlamina.app`. Apple Silicon only.
+
+> ⚠️ The Windows and macOS builds aren't signed, since that requires paid developer certificates, so the system warns about them the first time:
+> - **Windows**: SmartScreen may block it; choose *More info* → *Run anyway*.
+> - **macOS**: it refuses to open the app; go to *System Settings* → *Privacy & Security* and choose *Open Anyway*, or run `xattr -dr com.apple.quarantine Tlamina.app`.
 
 ## 🚀 Running from source
 
@@ -67,8 +72,8 @@ Tlamina started in December 2021 as my take on [Clear Code](https://www.youtube.
 | **Art and audio** | The tutorial's own files | Kenney's CC0 packs, packed into a sprite atlas by a script; CRT effect drawn in code |
 | **Feel** | Sprites disappear on hit | Explosions, floating points, damage cracks, screen shake |
 | **Code** | A few modules with global state, frame-based movement | A `tlamina` package organized by role, delta-time movement, design patterns documented in [`docs/`](docs/architecture.md) |
-| **Quality** | No tests | 105 tests, strict linting, CI on every pull request |
-| **Distribution** | Run from source | Linux and Windows executables built and released automatically |
+| **Quality** | No tests | 106 tests, strict linting, CI on every pull request |
+| **Distribution** | Run from source | Linux, Windows, and macOS executables built and released automatically |
 
 ### 🤖 Built with AI assistance
 
