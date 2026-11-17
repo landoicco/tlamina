@@ -44,4 +44,4 @@ For the game's art and audio, see [CREDITS.md](CREDITS.md).
 
 ## LGPL components
 
-pygame-ce and the LGPL libraries above are bundled unmodified inside the executables. To use a modified version of any of them, build the game from source (the code is public under the MIT license) with `tools/build_exe.py` after installing your version. See the [README](README.md) for build instructions.
+pygame-ce and the LGPL libraries above are bundled unmodified inside the executables. To use a modified version of any of them, build the game from source (the code is public under the MIT license) with `tools/build_exe.py` after installing your version. See [`docs/development.md`](docs/development.md) for build instructions.
