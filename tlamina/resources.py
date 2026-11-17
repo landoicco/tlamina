@@ -1,5 +1,6 @@
 import json
 import sys
+import tomllib
 from functools import cache
 from pathlib import Path
 
@@ -25,6 +26,13 @@ def load_image(relative_path):
 def load_atlas_index():
     with open(asset_path('assets/atlas.json')) as file:
         return json.load(file)['sprites']
+
+
+@cache
+def load_version():
+    """The version in pyproject.toml, which build_exe.py bundles with the executable."""
+    with open(asset_path('pyproject.toml'), 'rb') as file:
+        return tomllib.load(file)['project']['version']
 
 
 @cache

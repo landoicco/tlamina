@@ -12,6 +12,8 @@ A retro space shooter built with [pygame-ce](https://pyga.me/). Hold off an alie
 
 > 🏹 **Tlamina** is a Nahuatl verb meaning *to shoot arrows* ([Gran Diccionario Náhuatl](https://gdn.iib.unam.mx/diccionario/tlamina)). In this game, your strongest weapon is a charged arrow that flies through every enemy in its path.
 
+✅ **Tlamina is complete.** Version 1.0.0 is the finished game, and no new features or gameplay changes are planned. Any later changes will only touch the documentation or CI.
+
 ## 🎮 How to play
 
 | Key | Action |
@@ -22,7 +24,7 @@ A retro space shooter built with [pygame-ce](https://pyga.me/). Hold off an alie
 | <kbd>Esc</kbd> | Pause and resume |
 | <kbd>Enter</kbd> | Play again after a game over |
 
-Every 5 hits in a row raise the combo multiplier, up to ×4, so line the arrow up under a column. Shooting down the bonus UFO drops a power-up: ⭐ Volley, ⚡ Rapid fire, or 🛡️ Shield. You have three lives, and your best score is saved between runs. The full rules are in the [game design document](docs/game-design.md).
+Combos, power-ups, and scoring are explained in the [game design document](docs/game-design.md).
 
 ## 📥 Download
 
@@ -36,30 +38,7 @@ Get the latest build from the [releases page](https://github.com/landoicco/tlami
 > - **Windows**: SmartScreen may block it; choose *More info* → *Run anyway*.
 > - **macOS**: it refuses to open the app; go to *System Settings* → *Privacy & Security* and choose *Open Anyway*, or run `xattr -dr com.apple.quarantine Tlamina.app`.
 
-## 🚀 Running from source
-
-Requires Python 3.11 or newer. With [uv](https://docs.astral.sh/uv/):
-
-```sh
-uv run python -m tlamina
-```
-
-Or with Nix: `nix develop`, then `python -m tlamina`.
-
-## 🧪 Development
-
-Lint and tests run in CI on every push and pull request. To run them locally (inside `nix develop`, or prefixed with `uv run`):
-
-```sh
-ruff check .
-pytest
-```
-
-To build an executable for your platform, run `uv run --group build python tools/build_exe.py`; the result goes to `dist/`.
-
-- 🏗️ [Architecture](docs/architecture.md): how the code is organized and the *Game Programming Patterns* it uses
-- 🎯 [Game design](docs/game-design.md): what the game is trying to be, and what it leaves out
-- 🛠️ [Tools](tools/README.md): rebuilding the sprite atlas
+To run it from source, run the tests, or build the executables, see [development](docs/development.md). How the code is organized is in the [architecture](docs/architecture.md) page.
 
 ## 🌱 From tutorial to finished game
 
@@ -72,7 +51,7 @@ Tlamina started in December 2021 as my take on [Clear Code](https://www.youtube.
 | **Art and audio** | The tutorial's own files | Kenney's CC0 packs, packed into a sprite atlas by a script; CRT effect drawn in code |
 | **Feel** | Sprites disappear on hit | Explosions, floating points, damage cracks, screen shake |
 | **Code** | A few modules with global state, frame-based movement | A `tlamina` package organized by role, delta-time movement, design patterns documented in [`docs/`](docs/architecture.md) |
-| **Quality** | No tests | 106 tests, strict linting, CI on every pull request |
+| **Quality** | No tests | Unit tests, strict linting, CI on every pull request |
 | **Distribution** | Run from source | Linux, Windows, and macOS executables built and released automatically |
 
 ### 🤖 Built with AI assistance
@@ -81,4 +60,4 @@ The 2026 work was done with [Claude Code](https://claude.com/claude-code) as a p
 
 ## 📄 Credits and license
 
-The code is released under the [MIT License](LICENSE). The art and audio are **not my own work** and aren't covered by it: sprites and sound effects are by [Kenney](https://www.kenney.nl) and the music is by [yd](https://opengameart.org/users/yd), all under CC0. See [`CREDITS.md`](CREDITS.md) for per-asset attribution, and [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) for the libraries bundled in the executables.
+The code is released under the [MIT License](LICENSE). The art and audio are **not my own work** and aren't covered by it: they're by [Kenney](https://www.kenney.nl) and [yd](https://opengameart.org/users/yd), under CC0. See [`CREDITS.md`](CREDITS.md) for each asset and [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) for the libraries bundled in the executables.
