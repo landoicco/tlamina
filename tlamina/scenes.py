@@ -5,7 +5,7 @@ import pygame
 
 from tlamina.game import GAME_OVER, Game
 from tlamina.highscore import load_high_score, save_high_score
-from tlamina.resources import load_font, load_sound
+from tlamina.resources import load_font, load_sound, load_version
 from tlamina.settings import BLINK_PERIOD, OVERLAY_ALPHA, SCREEN_HEIGHT, SCREEN_WIDTH
 from tlamina.visuals.ui import draw_text
 
@@ -15,6 +15,9 @@ CENTER_Y = SCREEN_HEIGHT / 2
 PORTFOLIO_TEXT = 'licaza.dev'
 PORTFOLIO_URL = 'https://licaza.dev'
 PORTFOLIO_SIZE = 14
+
+# Far enough from the corner that the CRT vignette doesn't hide it
+VERSION_POSITION = (SCREEN_WIDTH - 40, SCREEN_HEIGHT - 30)
 
 
 def pressed(event, *keys):
@@ -56,6 +59,7 @@ class SplashScene(Scene):
         self.backdrop = Game()
         self.time = 0
         self.high_score = load_high_score()
+        self.version = load_version()
         self.link_rect = pygame.Rect((0, 0), load_font(PORTFOLIO_SIZE).size(PORTFOLIO_TEXT))
         self.link_rect.center = (CENTER_X, 712)
         self.link_hovered = False
@@ -93,6 +97,8 @@ class SplashScene(Scene):
             pygame.draw.line(surface, 'white', underline.bottomleft, underline.bottomright)
         else:
             draw_text(surface, PORTFOLIO_TEXT, PORTFOLIO_SIZE, 'gray70', center=self.link_rect.center)
+        # No "v" prefix: in this font it looks like a "u"
+        draw_text(surface, self.version, 12,'gray70', bottomright=VERSION_POSITION)
 
 
 class PlayingScene(Scene):

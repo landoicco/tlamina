@@ -89,3 +89,10 @@ def test_the_executable_icon_is_a_valid_ico():
     assert (reserved, kind) == (0, 1)
     sizes = {struct.unpack_from('<B', data, 6 + 16 * i)[0] or 256 for i in range(count)}
     assert {16, 32, 256} <= sizes
+
+
+def test_the_version_is_the_one_in_pyproject():
+    with open(ROOT / 'pyproject.toml', 'rb') as file:
+        version = tomllib.load(file)['project']['version']
+
+    assert resources.load_version() == version

@@ -43,6 +43,8 @@ def build_executable():
         '--paths', str(ROOT),
         # Bundled under sys._MEIPASS/assets, where resources.py looks for them
         '--add-data', f'{ROOT / "assets"}{os.pathsep}assets',
+        # Read by resources.load_version for the splash screen
+        '--add-data', f'{ROOT / "pyproject.toml"}{os.pathsep}.',
         '--distpath', str(BUILD / 'dist'),
         '--workpath', str(BUILD / 'work'),
         '--specpath', str(BUILD),
