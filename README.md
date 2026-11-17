@@ -72,8 +72,10 @@ Tlamina started in December 2021 as my take on [Clear Code](https://www.youtube.
 | **Art and audio** | The tutorial's own files | Kenney's CC0 packs, packed into a sprite atlas by a script; CRT effect drawn in code |
 | **Feel** | Sprites disappear on hit | Explosions, floating points, damage cracks, screen shake |
 | **Code** | A few modules with global state, frame-based movement | A `tlamina` package organized by role, delta-time movement, design patterns documented in [`docs/`](docs/architecture.md) |
-| **Quality** | No tests | 106 tests, strict linting, CI on every pull request |
+| **Quality** | No tests | 107 tests, strict linting, CI on every pull request |
 | **Distribution** | Run from source | Linux, Windows, and macOS executables built and released automatically |
+
+> ✅ **Tlamina is complete.** Version 1.0.0 is the finished game, and no new features or gameplay changes are planned. Any later changes will only touch the documentation or CI.
 
 ### 🤖 Built with AI assistance
 
